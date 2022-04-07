@@ -1,0 +1,19 @@
+{
+	"include": ["src"],
+	"exclude": ["src/__tests__/**/*"],
+	"compilerOptions": {
+		"useDefineForClassFields": true,
+		"rootDir": "./src",
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"sourceMap": false,
+		"typeRoots": ["./node_modules/@types", "../../node_modules/@types"]
+	}
+}

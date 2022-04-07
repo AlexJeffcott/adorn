@@ -1,0 +1,12 @@
+{
+	"lines": 90,
+	"statements": 90,
+	"functions": 90,
+	"branches": 90,
+	"check-coverage": true,
+	"include": ["build/src/**", "!build/src/__tests__"],
+	"exclude": ["build/src/index.js"],
+	"per-file": true,
+	"all": true,
+	"reportDir": "../../coverage-frontend-react"
+}

@@ -1,0 +1,6 @@
+.code
+.idea
+.DS_Store
+node_modules
+lerna-debug.log
+coverage-*

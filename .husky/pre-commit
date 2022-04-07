@@ -1,0 +1,5 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx lerna run --stream lint
+npx lerna run --stream test:cov

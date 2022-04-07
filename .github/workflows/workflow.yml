@@ -1,0 +1,47 @@
+name: Adorn CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: "npm"
+      - run: npm ci --no-scripts
+      - run: npx lerna bootstrap
+      - run: npx lerna run emit
+      - run: npx lerna run lint
+      - run: npx lerna run build
+      - uses: actions/upload-artifact@v3
+        with:
+          path: packages/**/build
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: "npm"
+      - run: npm ci --no-scripts
+      - run: npx lerna bootstrap
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: packages
+      - run: npx lerna run test:ci
