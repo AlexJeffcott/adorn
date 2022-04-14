@@ -2,6 +2,7 @@
 ## Performant and powerful keyword matching, extraction and annotation for the DOM
 ### Background and Inspiration
 https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
+
 https://arxiv.org/abs/1711.00046
 
 ### Usage in static HTML
