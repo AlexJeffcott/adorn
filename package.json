@@ -2,7 +2,14 @@
   "name": "adorn",
   "version": "1.0.0",
   "description": "Performant and powerful keyword matching and annotation for the DOM",
-  "keywords": ["annotate", "annotation", "fasttext", "corasick", "keyword-extraction", "search-in-text"],
+  "keywords": [
+    "annotate",
+    "annotation",
+    "fasttext",
+    "corasick",
+    "keyword-extraction",
+    "search-in-text"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AlexJeffcott/adorn.git"
@@ -20,16 +27,17 @@
   "homepage": "https://github.com/AlexJeffcott/adorn#readme",
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist",
+    "run": "lerna run --stream",
     "clean": "lerna clean",
     "add:dev": "lerna add --dev",
     "prepare": "husky install"
   },
   "devDependencies": {
     "@actions/core": "^1.6.0",
-    "@actions/github": "^5.0.0",
-    "@commitlint/cli": "^16.2.1",
+    "@actions/github": "^5.0.1",
+    "@commitlint/cli": "^16.2.3",
     "@commitlint/config-conventional": "^16.2.1",
-    "husky": "^7.0.0",
+    "husky": "^7.0.4",
     "lerna": "^4.0.0"
   }
 }

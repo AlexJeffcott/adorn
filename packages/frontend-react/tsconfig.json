@@ -17,6 +17,6 @@
 		"jsx": "react-jsx",
 		"typeRoots": ["./node_modules/@types", "../../node_modules/@types"]
 	},
-	"include": ["src", "vite.config.js"], // the vite.config.js must be included here for eslint, but it should not be parsed as typescript as this creates problems with vite's own typing dependencies
+	"include": ["src", "vite.config.js", "web-test-runner.config.cjs"], // the vite.config.js and web-test-runner.config.cjs must be included here for eslint, but it should not be parsed as typescript as this creates problems with vite's own typing dependencies
 	"references": [{ "path": "./tsconfig.node.json" }]
 }
