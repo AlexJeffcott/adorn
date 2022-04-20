@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { Match } from '../../';
 import { performance, PerformanceObserver } from 'perf_hooks';
-import { ipsum, ipsumCaseInsensitive, ipsumCaseSensitive } from './texts';
+import { ipsum, ipsumCaseInsensitive, ipsumCaseSensitive } from '../__mocks__/ipsumIns';
 
 const opts = { tag: 'x-a' };
 const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, opts);
