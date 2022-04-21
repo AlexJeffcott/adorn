@@ -1,0 +1,21 @@
+{
+	"name": "test-utils",
+	"version": "1.0.0",
+	"description": "Testing utils and mocks for adorn",
+	"keywords": [],
+	"author": "Alex Jeffcott",
+	"license": "ISC",
+	"main": "build/index.js",
+	"types": "build/index.d.ts",
+	"type": "module",
+	"scripts": {
+		"//base_scripts": "the building blocks of commandscripts go here",
+		"clean": "rm -rf src/**/*.js src/*.js src/**/*.map.ts src/*.map.ts",
+		"build": "npm run clean && tsc",
+		"eslint": "eslint --ignore-path .gitignore --ext .ts --fix .",
+		"prettier": "prettier --ignore-path .gitignore --write .",
+		"jscpd": "jscpd",
+		"//command_scripts": "the compositions of base_scripts go here",
+		"lint": "npm run prettier && npm run eslint && npm run jscpd"
+	}
+}
