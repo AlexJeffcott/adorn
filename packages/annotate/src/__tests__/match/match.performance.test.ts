@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { Match } from '../../';
 import { performance, PerformanceObserver } from 'perf_hooks';
-import { ipsum, ipsumCaseInsensitive, ipsumCaseSensitive } from '../__mocks__/ipsumIns';
+import { ipsumCaseSensitive, ipsumCaseInsensitive, ipsumText } from 'test-utils';
 
 const opts = { tag: 'x-a' };
 const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, opts);
@@ -16,7 +16,7 @@ describe('annotate with', () => {
 		obs.observe({ entryTypes: ['function'] });
 
 		const wrapped = performance.timerify((_ipsum: string) => match.extractMatchIds(_ipsum));
-		wrapped(ipsum);
+		wrapped(ipsumText);
 		obs.disconnect();
 	});
 	it('extractMatchIds correctly and in less than 3ms', () => {
@@ -28,7 +28,7 @@ describe('annotate with', () => {
 		obs.observe({ entryTypes: ['function'] });
 
 		const wrapped = performance.timerify((_ipsum: string) => match.extractMatchIds(_ipsum));
-		wrapped(ipsum);
+		wrapped(ipsumText);
 		obs.disconnect();
 	});
 });

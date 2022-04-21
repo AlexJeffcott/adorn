@@ -21,8 +21,8 @@ jobs:
       - run: npm ci --no-scripts
       - run: npm run bootstrap
       - run: npm run run emit
-      - run: npm run run lint
       - run: npm run run build
+      - run: npm run run lint
       - uses: actions/upload-artifact@v3
         with:
           path: packages/**/build

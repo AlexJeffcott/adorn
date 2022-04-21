@@ -1,12 +1,14 @@
 import { expect } from 'chai';
 import { Match } from '../../';
-import { ipsum, ipsumCaseInsensitive, ipsumCaseSensitive } from '../__mocks__/ipsumIns';
 import {
+	ipsumCaseSensitive,
+	ipsumCaseInsensitive,
+	ipsumText,
 	extractedMatchIds,
 	replacedKws,
 	extractedDirtyMatches,
 	wrappedKwsWithHtml
-} from '../__mocks__/ipsumOuts';
+} from 'test-utils';
 
 const opts = { tag: 'x-a' };
 const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, opts);
@@ -14,22 +16,22 @@ const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, opts);
 describe('annotate with', () => {
 	describe('text ending in full stop should', () => {
 		it('extractMatchIds correctly', () => {
-			const res = match.extractMatchIds(ipsum);
+			const res = match.extractMatchIds(ipsumText);
 			expect(JSON.stringify(res)).to.equal(JSON.stringify(extractedMatchIds));
 		});
 
 		it('replaceKws correctly', () => {
-			const res = match.replaceKws(ipsum);
+			const res = match.replaceKws(ipsumText);
 			expect(res).to.equal(replacedKws);
 		});
 
 		it('extractDirtyMatches correctly', () => {
-			const res = match.extractDirtyMatches(ipsum);
+			const res = match.extractDirtyMatches(ipsumText);
 			expect(JSON.stringify(res)).to.equal(JSON.stringify(extractedDirtyMatches));
 		});
 
 		it('wrapKwsWithHtml correctly', () => {
-			const res = match.wrapKwsWithHtml(ipsum);
+			const res = match.wrapKwsWithHtml(ipsumText);
 			expect(res).to.equal(wrappedKwsWithHtml);
 		});
 	});
