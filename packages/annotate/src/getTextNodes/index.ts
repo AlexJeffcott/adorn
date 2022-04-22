@@ -7,7 +7,7 @@ export class TextNodesFromDOM {
 	private ownerDocument: Document;
 	private ignoreNodeNames: Array<string>;
 	private readonly nodeReg =
-		/(head|script|style|meta|noscript|input|img|svg|cite|button|path|d|defs)/i;
+		/(head|script|style|meta|noscript|input|img|svg|cite|button|path|defs)/i;
 	private textNodes: Node[];
 
 	constructor(baseElement: HTMLElement, ignoreNodeNames: string[]) {

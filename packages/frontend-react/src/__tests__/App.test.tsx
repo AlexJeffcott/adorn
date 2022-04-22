@@ -16,9 +16,9 @@ describe('test App', () => {
 		await waitFor(() => expect(screen.queryByText('Choose your poison')).to.not.exist);
 
 		await waitFor(() => {
-			const heading = screen.getByRole('heading');
+			const heading = screen.getAllByRole('heading')[0];
 			expect(heading).to.contain(/lorem/i);
-			expect(screen.getByText(/Donec mattis, risus ut volutpat rutrum/i)).to.exist;
+			expect(screen.getByText(/valítudinem, vires, vacuitatem doloris/i)).to.exist;
 		});
 	});
 });
