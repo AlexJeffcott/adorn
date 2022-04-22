@@ -1,9 +1,25 @@
 # Adorn
 ## Performant and powerful keyword matching, extraction and annotation for the DOM
 ### Background and Inspiration
-https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
+I believe that there is a use-case for keyword matching in large amounts of text (with large numbers of keywords) in Javascript-friendly environments. I believe there is a further use-case for wrapping such matches in xml; to be used to add highlighting, tooltips or any other interactivity to keyword text in websites.
 
-https://arxiv.org/abs/1711.00046
+I felt that the current possibilities available to achieve this were lacking, so created this library.
+
+### Performance
+The [complexity](https://en.wikipedia.org/wiki/Time_complexity) of the [FlashText algorithm](https://arxiv.org/abs/1711.00046) is linear and can search or replace keywords in one pass over a document. The time complexity of this algorithm is not dependent on the number of terms being searched or replaced. So for a document of size N (characters) and a dictionary of M keywords, the time complexity will be O(n). It is much faster than Regex, because regex time complexity is O(MxN).
+
+The [Aho–Corasick algorithm](https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm), by contrast, is linear in the length of the strings plus the length of the searched text plus the number of output matches.
+
+### Power
+There are several methods available depending on what you wish to achieve including, a simple list of match ids, a list of 'dirty' matches, the full text returned with matches wrapped in a custom tag.
+
+It is ready to be used in static html and plain text, in Node and in the Browser. There is also support for simple implementation in React.
+
+It is possible to have case-insensitive AND case-sensitive matches in the same Match instance. In other words, the flower 'rose' is not matched when looking for the name 'Rose' but both 'flower' and 'Flower' can be matched in the same matcher instance unlike the original flash-text implementation.
+
+You can optionally listen for DOM mutations and scrolling.
+
+One possible disadvantage of this algorithm is that it does not match substrings and returns the longest match only (if you want to do that then aho-corasick is probably a better choice for you).
 
 ### Usage in static HTML
 ```html

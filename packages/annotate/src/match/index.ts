@@ -1,10 +1,4 @@
-// function replacer(key: any, value: any): any {
-//     if(value instanceof Map) {
-//         return Array.from(value.entries()) // or with spread: value: [...value]
-//     } else {
-//         return value;
-//     }
-// }
+import { getMapAsString, getNonWordBoundaries, getSizeInBytes } from './utils';
 
 /*
 	A JavaScript implementation of https://github.com/vi3k6i5/flashtext adapted for elaborating the found text.
@@ -14,66 +8,90 @@ type KwList = Map<string, string[]>;
 type Opts = { tag: string };
 
 export class Match {
-	private readonly _keyword: '_kw_';
+	private readonly _kw: '_kw_';
 	private nonWordBoundaries: Set<string>;
-	private readonly keywordTrieDict: Trie;
+	private readonly trie: Trie;
 	private readonly opts: Opts;
 
 	constructor(insensitive: KwList, sensitive: KwList, opts: Opts) {
-		this._keyword = '_kw_';
+		this._kw = '_kw_';
 
-		this.nonWordBoundaries = ((): Set<string> => {
-			const getChars = (start: number, end: number, ascii: boolean): string[] => {
-				const temp = [];
-				for (let i = start; i <= end; i++) {
-					temp.push(ascii ? String.fromCharCode(i) : i.toString());
-				}
-				return temp;
-			};
-			return new Set([
-				...getChars(0, 9, false),
-				...getChars(65, 90, true),
-				...getChars(97, 122, true),
-				'_'
-			]);
-		})();
+		this.nonWordBoundaries = getNonWordBoundaries();
 
-		this.keywordTrieDict = new Map();
+		this.trie = new Map();
 		this.addKws(insensitive, false);
 		this.addKws(sensitive, true);
 		this.opts = opts;
 	}
 
+	getDetails() {
+		return {
+			trieSizeInBytes: getSizeInBytes(this.trie),
+			trieAsString: getMapAsString(this.trie)
+		};
+	}
+
 	/**
 	 * @param id is the associated id
 	 * @param keyword is the target text to match against
-	 * @param caseSensitive is whether to NOT map both uppercase and lowercase chars
+	 * @param caseSensitive is whether to ONLY map the chars with their given case
 	 */
 	addKw(id: string, keyword: string, caseSensitive: boolean) {
-		let currentDictRef = this.keywordTrieDict;
+		let currentTrie = this.trie;
 
 		keyword.split('').forEach((char) => {
 			if (caseSensitive) {
-				if (!currentDictRef.get(char)) currentDictRef.set(char, new Map());
-				currentDictRef = currentDictRef.get(char) as Trie; // trust that the value to the key char is always a Trie
+				if (!currentTrie.get(char)) currentTrie.set(char, new Map());
+				currentTrie = currentTrie.get(char) as Trie; // trust that the value to the key char is always a Trie
 			} else {
 				const lowercaseChar = char.toLowerCase();
 				const uppercaseChar = char.toUpperCase();
-				let lowercaseDictRef = currentDictRef.get(lowercaseChar);
-				if (!lowercaseDictRef) currentDictRef.set(lowercaseChar, new Map());
-				lowercaseDictRef = currentDictRef.get(lowercaseChar) as Trie; // trust that the value to the key char is always a Trie
-				if (!currentDictRef.get(uppercaseChar)) currentDictRef.set(uppercaseChar, lowercaseDictRef);
-				currentDictRef = lowercaseDictRef;
+				let lowercaseTrie = currentTrie.get(lowercaseChar);
+				if (!lowercaseTrie) currentTrie.set(lowercaseChar, new Map());
+				lowercaseTrie = currentTrie.get(lowercaseChar) as Trie; // trust that the value to the key char is always a Trie
+				if (!currentTrie.get(uppercaseChar)) currentTrie.set(uppercaseChar, lowercaseTrie);
+				currentTrie = lowercaseTrie;
 			}
 		});
-		currentDictRef.set(this._keyword, id);
+		currentTrie.set(this._kw, id);
 	}
 
 	addKws(kwList: KwList, caseSensitive: boolean) {
 		kwList.forEach((kws, id) => {
 			kws.forEach((kw) => this.addKw(id, kw, caseSensitive));
 		});
-		// console.log(JSON.stringify(kwList, replacer, 1))
+	}
+
+	getMatchIndexes(sentence: string) {
+		const idsWithIndexes: Array<string | number>[] = [];
+		const len = sentence.length;
+		let currentTrie = this.trie;
+		let matchStart: null | number = null;
+		let matchEnd: null | number = null;
+		let foundId: boolean | string = false;
+
+		for (let i = 0; i < len; i++) {
+			const char = sentence[i];
+			const hasChar = currentTrie.has(char);
+			if (hasChar && matchStart === null) matchStart = i;
+
+			if (hasChar) currentTrie = currentTrie.get(char) as Trie;
+
+			foundId = currentTrie.has(this._kw) && (currentTrie.get(this._kw) as string);
+
+			if (!hasChar || i === len - 1) {
+				if (foundId) {
+					if (matchStart === null) throw new Error('!!!matchStart is null in getMatchIndexes!!!');
+					matchEnd = i - 1;
+					idsWithIndexes.push([foundId, matchStart, matchEnd]);
+				}
+				currentTrie = this.trie;
+				foundId = false;
+				matchStart = null;
+				matchEnd = null;
+			}
+		}
+		return idsWithIndexes;
 	}
 
 	extractMatchIds(sentence: string) {
@@ -82,7 +100,7 @@ export class Match {
 
 		if (sentenceLength === 0) return keywordsExtracted;
 
-		let currentDictRef = this.keywordTrieDict;
+		let currentTrie = this.trie;
 		let sequenceEndPos = 0;
 		let idx = 0;
 
@@ -92,19 +110,19 @@ export class Match {
 			let sequenceFound, longestSequenceFound, isLongerSequenceFound, idy;
 
 			if (!this.nonWordBoundaries.has(char)) {
-				if (currentDictRef.has(this._keyword) || currentDictRef.has(char)) {
+				if (currentTrie.has(this._kw) || currentTrie.has(char)) {
 					sequenceFound = '';
 					longestSequenceFound = '';
 					isLongerSequenceFound = false;
 
-					if (currentDictRef.has(this._keyword)) {
-						sequenceFound = currentDictRef.get(this._keyword) as string; // trust that the value to the key this._keyword is always a string
-						longestSequenceFound = currentDictRef.get(this._keyword) as string; // trust that the value to the key this._keyword is always a string
+					if (currentTrie.has(this._kw)) {
+						sequenceFound = currentTrie.get(this._kw) as string; // trust that the value to the key this._kw is always a string
+						longestSequenceFound = currentTrie.get(this._kw) as string; // trust that the value to the key this._kw is always a string
 						sequenceEndPos = idx;
 					}
 
-					if (currentDictRef.has(char)) {
-						let currentDictContinued = currentDictRef.get(char);
+					if (currentTrie.has(char)) {
+						let currentDictContinued = currentTrie.get(char);
 						idy = idx + 1;
 
 						while (idy < sentenceLength) {
@@ -113,9 +131,9 @@ export class Match {
 							if (
 								!this.nonWordBoundaries.has(innerChar) &&
 								typeof currentDictContinued !== 'string' &&
-								currentDictContinued?.has(this._keyword)
+								currentDictContinued?.has(this._kw)
 							) {
-								longestSequenceFound = currentDictContinued.get(this._keyword) as string; // trust that the value to the key this._keyword is always a string
+								longestSequenceFound = currentDictContinued.get(this._kw) as string; // trust that the value to the key this._kw is always a string
 								sequenceEndPos = idy;
 								isLongerSequenceFound = true;
 							}
@@ -135,9 +153,9 @@ export class Match {
 						if (
 							idy >= sentenceLength &&
 							typeof currentDictContinued !== 'string' &&
-							currentDictContinued?.has(this._keyword)
+							currentDictContinued?.has(this._kw)
 						) {
-							longestSequenceFound = currentDictContinued.get(this._keyword) as string; // trust that the value to the key this._keyword is always a string
+							longestSequenceFound = currentDictContinued.get(this._kw) as string; // trust that the value to the key this._kw is always a string
 							sequenceEndPos = idy;
 							isLongerSequenceFound = true;
 						}
@@ -147,17 +165,17 @@ export class Match {
 						}
 					}
 
-					currentDictRef = this.keywordTrieDict;
+					currentTrie = this.trie;
 					if (longestSequenceFound) {
 						keywordsExtracted.push(longestSequenceFound);
 					}
 				} else {
-					currentDictRef = this.keywordTrieDict;
+					currentTrie = this.trie;
 				}
-			} else if (currentDictRef.has(char)) {
-				currentDictRef = currentDictRef.get(char) as Trie; // trust that the value to the key char is always a Trie
+			} else if (currentTrie.has(char)) {
+				currentTrie = currentTrie.get(char) as Trie; // trust that the value to the key char is always a Trie
 			} else {
-				currentDictRef = this.keywordTrieDict;
+				currentTrie = this.trie;
 				idy = idx + 1;
 
 				while (idy < sentenceLength) {
@@ -170,8 +188,8 @@ export class Match {
 			}
 
 			if (idx + 1 >= sentenceLength) {
-				if (currentDictRef.has(this._keyword)) {
-					sequenceFound = currentDictRef.get(this._keyword) as string; // trust that the value to the key this._keyword is always a string
+				if (currentTrie.has(this._kw)) {
+					sequenceFound = currentTrie.get(this._kw) as string; // trust that the value to the key this._kw is always a string
 					keywordsExtracted.push(sequenceFound);
 				}
 			}
@@ -186,7 +204,7 @@ export class Match {
 		const orgSentence = sentence;
 		const dirtyMap = new Map();
 		let currentWord = '';
-		let currentDictRef = this.keywordTrieDict;
+		let currentTrie = this.trie;
 		let sequenceEndPos = 0;
 		let idx = 0;
 
@@ -196,17 +214,13 @@ export class Match {
 
 			let sequenceFound, longestSequenceFound, isLongerSequenceFound, idy;
 
-			if (
-				this.nonWordBoundaries.has(char) &&
-				idx + 1 === sentenceLength &&
-				currentDictRef.has(char)
-			) {
-				const currentDictContinued = currentDictRef.get(char);
+			if (this.nonWordBoundaries.has(char) && idx + 1 === sentenceLength && currentTrie.has(char)) {
+				const currentDictContinued = currentTrie.get(char);
 				const currentWordContinued = currentWord;
 				idy = idx + 1;
 
-				if (typeof currentDictContinued !== 'string' && currentDictContinued?.has(this._keyword)) {
-					longestSequenceFound = currentDictContinued?.get(this._keyword) as string; // trust that the value to the key this._keyword is always a string
+				if (typeof currentDictContinued !== 'string' && currentDictContinued?.has(this._kw)) {
+					longestSequenceFound = currentDictContinued?.get(this._kw) as string; // trust that the value to the key this._kw is always a string
 					sequenceEndPos = idy;
 					isLongerSequenceFound = true;
 				}
@@ -218,19 +232,19 @@ export class Match {
 			}
 
 			if (!this.nonWordBoundaries.has(char)) {
-				if (currentDictRef.has(this._keyword) || currentDictRef.has(char)) {
+				if (currentTrie.has(this._kw) || currentTrie.has(char)) {
 					sequenceFound = '';
 					longestSequenceFound = '';
 					isLongerSequenceFound = false;
 
-					if (currentDictRef.has(this._keyword)) {
-						sequenceFound = currentDictRef.get(this._keyword);
-						longestSequenceFound = currentDictRef.get(this._keyword);
+					if (currentTrie.has(this._kw)) {
+						sequenceFound = currentTrie.get(this._kw);
+						longestSequenceFound = currentTrie.get(this._kw);
 						sequenceEndPos = idx;
 					}
 
-					if (currentDictRef.has(char)) {
-						let currentDictContinued = currentDictRef.get(char);
+					if (currentTrie.has(char)) {
+						let currentDictContinued = currentTrie.get(char);
 						let currentWordContinued = currentWord;
 						idy = idx + 1;
 
@@ -241,9 +255,9 @@ export class Match {
 							if (
 								!this.nonWordBoundaries.has(innerChar) &&
 								typeof currentDictContinued !== 'string' &&
-								currentDictContinued?.has(this._keyword)
+								currentDictContinued?.has(this._kw)
 							) {
-								longestSequenceFound = currentDictContinued.get(this._keyword) as string; // trust that the value to the key this._keyword is always a string
+								longestSequenceFound = currentDictContinued.get(this._kw) as string; // trust that the value to the key this._kw is always a string
 								sequenceEndPos = idy;
 								isLongerSequenceFound = true;
 							}
@@ -263,9 +277,9 @@ export class Match {
 						if (
 							idy >= sentenceLength &&
 							typeof currentDictContinued !== 'string' &&
-							currentDictContinued?.has(this._keyword)
+							currentDictContinued?.has(this._kw)
 						) {
-							longestSequenceFound = currentDictContinued?.get(this._keyword) as string; // trust that the value to the key this._keyword is always a string
+							longestSequenceFound = currentDictContinued?.get(this._kw) as string; // trust that the value to the key this._kw is always a string
 							sequenceEndPos = idy;
 							isLongerSequenceFound = true;
 						}
@@ -275,7 +289,7 @@ export class Match {
 							currentWord = currentWordContinued;
 						}
 					}
-					currentDictRef = this.keywordTrieDict;
+					currentTrie = this.trie;
 
 					if (longestSequenceFound) {
 						dirtyMap.set(sequenceFound, currentWord.slice(0, -1));
@@ -284,13 +298,13 @@ export class Match {
 						currentWord = '';
 					}
 				} else {
-					currentDictRef = this.keywordTrieDict;
+					currentTrie = this.trie;
 					currentWord = '';
 				}
-			} else if (currentDictRef.has(char)) {
-				currentDictRef = currentDictRef.get(char) as Trie; // trust that the value to the key char is always a Trie;
+			} else if (currentTrie.has(char)) {
+				currentTrie = currentTrie.get(char) as Trie; // trust that the value to the key char is always a Trie;
 			} else {
-				currentDictRef = this.keywordTrieDict;
+				currentTrie = this.trie;
 				idy = idx + 1;
 
 				while (idy < sentenceLength) {
@@ -306,8 +320,8 @@ export class Match {
 			}
 
 			if (idx + 1 >= sentenceLength) {
-				if (currentDictRef.has(this._keyword)) {
-					sequenceFound = currentDictRef.get(this._keyword);
+				if (currentTrie.has(this._kw)) {
+					sequenceFound = currentTrie.get(this._kw);
 					if (idx === sentenceLength) {
 						dirtyMap.set(sequenceFound, currentWord);
 					} else {
@@ -326,7 +340,7 @@ export class Match {
 		const orgSentence = sentence;
 		let newSentence = '';
 		let currentWord = '';
-		let currentDictRef = this.keywordTrieDict;
+		let currentTrie = this.trie;
 		let currentWhiteSpace = '';
 		let sequenceEndPos = 0;
 		let idx = 0;
@@ -340,19 +354,19 @@ export class Match {
 			if (!this.nonWordBoundaries.has(char)) {
 				currentWhiteSpace = char;
 
-				if (currentDictRef.has(this._keyword) || currentDictRef.has(char)) {
+				if (currentTrie.has(this._kw) || currentTrie.has(char)) {
 					sequenceFound = '';
 					longestSequenceFound = '';
 					isLongerSequenceFound = false;
 
-					if (currentDictRef.has(this._keyword)) {
-						sequenceFound = currentDictRef.get(this._keyword);
-						longestSequenceFound = currentDictRef.get(this._keyword);
+					if (currentTrie.has(this._kw)) {
+						sequenceFound = currentTrie.get(this._kw);
+						longestSequenceFound = currentTrie.get(this._kw);
 						sequenceEndPos = idx;
 					}
 
-					if (currentDictRef.has(char)) {
-						let currentDictContinued = currentDictRef.get(char);
+					if (currentTrie.has(char)) {
+						let currentDictContinued = currentTrie.get(char);
 						let currentWordContinued = currentWord;
 						idy = idx + 1;
 
@@ -363,10 +377,10 @@ export class Match {
 							if (
 								!this.nonWordBoundaries.has(innerChar) &&
 								typeof currentDictContinued !== 'string' &&
-								currentDictContinued?.has(this._keyword)
+								currentDictContinued?.has(this._kw)
 							) {
 								currentWhiteSpace = innerChar;
-								longestSequenceFound = currentDictContinued.get(this._keyword) as string; // trust that the value to the key this._keyword is always a string
+								longestSequenceFound = currentDictContinued.get(this._kw) as string; // trust that the value to the key this._kw is always a string
 								sequenceEndPos = idy;
 								isLongerSequenceFound = true;
 							}
@@ -386,10 +400,10 @@ export class Match {
 						if (
 							idy >= sentenceLength &&
 							typeof currentDictContinued !== 'string' &&
-							currentDictContinued?.has(this._keyword)
+							currentDictContinued?.has(this._kw)
 						) {
 							currentWhiteSpace = '';
-							longestSequenceFound = currentDictContinued?.get(this._keyword) as string; // trust that the value to the key this._keyword is always a string
+							longestSequenceFound = currentDictContinued?.get(this._kw) as string; // trust that the value to the key this._kw is always a string
 							sequenceEndPos = idy;
 							isLongerSequenceFound = true;
 						}
@@ -399,7 +413,7 @@ export class Match {
 							currentWord = currentWordContinued;
 						}
 					}
-					currentDictRef = this.keywordTrieDict;
+					currentTrie = this.trie;
 
 					if (longestSequenceFound) {
 						newSentence += `${
@@ -413,15 +427,15 @@ export class Match {
 						currentWhiteSpace = '';
 					}
 				} else {
-					currentDictRef = this.keywordTrieDict;
+					currentTrie = this.trie;
 					newSentence += currentWord;
 					currentWord = '';
 					currentWhiteSpace = '';
 				}
-			} else if (currentDictRef.has(char)) {
-				currentDictRef = currentDictRef.get(char) as Trie; // trust that the value to the key char is always a Trie;
+			} else if (currentTrie.has(char)) {
+				currentTrie = currentTrie.get(char) as Trie; // trust that the value to the key char is always a Trie;
 			} else {
-				currentDictRef = this.keywordTrieDict;
+				currentTrie = this.trie;
 				idy = idx + 1;
 
 				while (idy < sentenceLength) {
@@ -439,8 +453,8 @@ export class Match {
 			}
 
 			if (idx + 1 >= sentenceLength) {
-				if (currentDictRef.has(this._keyword)) {
-					sequenceFound = currentDictRef.get(this._keyword);
+				if (currentTrie.has(this._kw)) {
+					sequenceFound = currentTrie.get(this._kw);
 					newSentence += sequenceFound;
 				} else {
 					newSentence += currentWord;
@@ -458,7 +472,7 @@ export class Match {
 		const orgSentence = sentence;
 		let newSentence = '';
 		let currentWord = '';
-		let currentDictRef = this.keywordTrieDict;
+		let currentTrie = this.trie;
 		let currentWhiteSpace = '';
 		let sequenceEndPos = 0;
 		let idx = 0;
@@ -469,18 +483,14 @@ export class Match {
 
 			let sequenceFound, longestSequenceFound, isLongerSequenceFound, idy;
 
-			if (
-				this.nonWordBoundaries.has(char) &&
-				idx + 1 === sentenceLength &&
-				currentDictRef.has(char)
-			) {
-				const currentDictContinued = currentDictRef.get(char);
+			if (this.nonWordBoundaries.has(char) && idx + 1 === sentenceLength && currentTrie.has(char)) {
+				const currentDictContinued = currentTrie.get(char);
 				const currentWordContinued = currentWord;
 				idy = idx + 1;
 
-				if (typeof currentDictContinued !== 'string' && currentDictContinued?.has(this._keyword)) {
+				if (typeof currentDictContinued !== 'string' && currentDictContinued?.has(this._kw)) {
 					currentWhiteSpace = '';
-					longestSequenceFound = currentDictContinued?.get(this._keyword) as string; // trust that the value to the key this._keyword is always a string
+					longestSequenceFound = currentDictContinued?.get(this._kw) as string; // trust that the value to the key this._kw is always a string
 					sequenceEndPos = idy;
 					isLongerSequenceFound = true;
 				}
@@ -494,19 +504,19 @@ export class Match {
 			if (!this.nonWordBoundaries.has(char)) {
 				currentWhiteSpace = char;
 
-				if (currentDictRef.has(this._keyword) || currentDictRef.has(char)) {
+				if (currentTrie.has(this._kw) || currentTrie.has(char)) {
 					sequenceFound = '';
 					longestSequenceFound = '';
 					isLongerSequenceFound = false;
 
-					if (currentDictRef.has(this._keyword)) {
-						sequenceFound = currentDictRef.get(this._keyword);
-						longestSequenceFound = currentDictRef.get(this._keyword);
+					if (currentTrie.has(this._kw)) {
+						sequenceFound = currentTrie.get(this._kw);
+						longestSequenceFound = currentTrie.get(this._kw);
 						sequenceEndPos = idx;
 					}
 
-					if (currentDictRef.has(char)) {
-						let currentDictContinued = currentDictRef.get(char);
+					if (currentTrie.has(char)) {
+						let currentDictContinued = currentTrie.get(char);
 						let currentWordContinued = currentWord;
 						idy = idx + 1;
 
@@ -517,10 +527,10 @@ export class Match {
 							if (
 								!this.nonWordBoundaries.has(innerChar) &&
 								typeof currentDictContinued !== 'string' &&
-								currentDictContinued?.has(this._keyword)
+								currentDictContinued?.has(this._kw)
 							) {
 								currentWhiteSpace = innerChar;
-								longestSequenceFound = currentDictContinued.get(this._keyword) as string; // trust that the value to the key this._keyword is always a string
+								longestSequenceFound = currentDictContinued.get(this._kw) as string; // trust that the value to the key this._kw is always a string
 								sequenceEndPos = idy;
 								isLongerSequenceFound = true;
 							}
@@ -540,10 +550,10 @@ export class Match {
 						if (
 							idy >= sentenceLength &&
 							typeof currentDictContinued !== 'string' &&
-							currentDictContinued?.has(this._keyword)
+							currentDictContinued?.has(this._kw)
 						) {
 							currentWhiteSpace = '';
-							longestSequenceFound = currentDictContinued?.get(this._keyword) as string; // trust that the value to the key this._keyword is always a string
+							longestSequenceFound = currentDictContinued?.get(this._kw) as string; // trust that the value to the key this._kw is always a string
 							sequenceEndPos = idy;
 							isLongerSequenceFound = true;
 						}
@@ -554,7 +564,7 @@ export class Match {
 						}
 					}
 
-					currentDictRef = this.keywordTrieDict;
+					currentTrie = this.trie;
 
 					if (longestSequenceFound) {
 						newSentence += `<${this.opts.tag} id="${
@@ -568,15 +578,15 @@ export class Match {
 						currentWhiteSpace = '';
 					}
 				} else {
-					currentDictRef = this.keywordTrieDict;
+					currentTrie = this.trie;
 					newSentence += currentWord;
 					currentWord = '';
 					currentWhiteSpace = '';
 				}
-			} else if (currentDictRef.has(char)) {
-				currentDictRef = currentDictRef.get(char) as Trie; // trust that the value to the key char is always a Trie;
+			} else if (currentTrie.has(char)) {
+				currentTrie = currentTrie.get(char) as Trie; // trust that the value to the key char is always a Trie;
 			} else {
-				currentDictRef = this.keywordTrieDict;
+				currentTrie = this.trie;
 				idy = idx + 1;
 
 				while (idy < sentenceLength) {
@@ -594,8 +604,8 @@ export class Match {
 			}
 
 			if (idx + 1 >= sentenceLength) {
-				if (currentDictRef.has(this._keyword)) {
-					sequenceFound = currentDictRef.get(this._keyword);
+				if (currentTrie.has(this._kw)) {
+					sequenceFound = currentTrie.get(this._kw);
 					if (idx === sentenceLength) {
 						newSentence += `<${this.opts.tag} id="${
 							sequenceFound as string /* trust that the value to the key longestSequenceFound is always a string */

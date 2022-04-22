@@ -12,7 +12,7 @@
 		"clean": "rm -rf src/*.js src/**/*.js src/*.d.ts src/**/*.d.ts build report",
 		"emit": "tsc -p tsconfig-notestfiles.json --declaration --emitDeclarationOnly --declarationMap --outDir build",
 		"build": "node .esbuildrc.js",
-		"test": "mocha-esbuild **/*.test.ts",
+		"test": "mocha-esbuild **/*.small.test.ts",
 		"eslint": "eslint --ignore-path .gitignore --ext .ts --fix .",
 		"types": "tsc --noEmit",
 		"prettier": "prettier --ignore-path .gitignore --write .",
