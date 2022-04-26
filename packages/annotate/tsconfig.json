@@ -2,6 +2,7 @@
 	"include": ["src"],
 	"compilerOptions": {
 		"useDefineForClassFields": true,
+		"lib": ["esnext", "dom"],
 		"rootDir": "./src",
 		"target": "ESNext",
 		"module": "ESNext",
