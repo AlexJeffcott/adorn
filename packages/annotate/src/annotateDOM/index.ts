@@ -15,6 +15,8 @@ export const annotateDOM = (textNodes: Array<Node | HTMLElement>, match: Match) 
 		} else {
 			renderNode.innerHTML = newHtml;
 			if ('replaceWith' in n) {
+				// todo: why has this error appeared from nowhere?
+				// @ts-ignore
 				n.replaceWith(...renderNode.childNodes);
 			}
 		}

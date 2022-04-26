@@ -22,15 +22,3 @@ export const mapLogger = (label: string, mapToLog: Map<any, any>) =>
 
 export const getMapAsString = (map: Map<any, any>, pretty?: boolean) =>
 	JSON.stringify(map, replacer, pretty ? 2 : 0);
-
-export const getSizeInBytes = (obj: any): number => {
-	let str = '';
-	if (typeof obj === 'string') {
-		str = obj;
-	} else if (obj instanceof Map) {
-		str = getMapAsString(obj);
-	} else {
-		str = JSON.stringify(obj);
-	}
-	return new TextEncoder().encode(str).length;
-};

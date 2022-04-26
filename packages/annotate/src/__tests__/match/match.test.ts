@@ -15,10 +15,6 @@ const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, opts);
 
 describe('annotate with', () => {
 	describe('text ending in full stop should', () => {
-		it('size of trie should be 379 bytes', () => {
-			expect(match.getDetails().trieSizeInBytes).to.equal(379);
-		});
-
 		it('extractMatchIds correctly', () => {
 			const res = match.extractMatchIds(ipsumText);
 			expect(JSON.stringify(res)).to.equal(JSON.stringify(extractedMatchIds));

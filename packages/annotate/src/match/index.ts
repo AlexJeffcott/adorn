@@ -1,4 +1,4 @@
-import { getMapAsString, getNonWordBoundaries, getSizeInBytes } from './utils';
+import { getMapAsString, getNonWordBoundaries } from './utils';
 
 /*
 	A JavaScript implementation of https://github.com/vi3k6i5/flashtext adapted for elaborating the found text.
@@ -19,6 +19,8 @@ export class Match {
 		this.nonWordBoundaries = getNonWordBoundaries();
 
 		this.trie = new Map();
+
+		// todo: check cs and ci maps do not clash
 		this.addKws(insensitive, false);
 		this.addKws(sensitive, true);
 		this.opts = opts;
@@ -26,7 +28,6 @@ export class Match {
 
 	getDetails() {
 		return {
-			trieSizeInBytes: getSizeInBytes(this.trie),
 			trieAsString: getMapAsString(this.trie)
 		};
 	}
