@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "scripts": {
+    "start": "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --remote-debugging-port=9222 --user-data-dir=remote-profile",
+    "run": "cd .. && python3 -m http.server 9222",
+    "test": "node index.mjs",
+    "perf": "tsc && node perf.js"
+  }
+}
