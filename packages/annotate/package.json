@@ -1,8 +1,21 @@
 {
-	"name": "annotate",
-	"version": "1.0.0",
+	"name": "@fairfox/adorn",
+	"description": "Powerfully performant keyword matching and annotation for the DOM",
+	"keywords": [
+		"annotate",
+		"annotation",
+		"flashtext",
+		"corasick",
+		"keyword-extraction",
+		"search-in-text"
+	],
+	"version": "1.0.1",
 	"author": "Alex Jeffcott",
 	"license": "MIT",
+	"homepage": "https://github.com/AlexJeffcott/adorn#readme",
+	"bugs": {
+		"url": "https://github.com/AlexJeffcott/adorn/issues"
+	},
 	"main": "build/index.js",
 	"types": "build/index.d.ts",
 	"type": "module",
