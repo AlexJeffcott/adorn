@@ -20,12 +20,13 @@ jobs:
           node-version: 18
           cache: "npm"
           registry-url: 'https://registry.npmjs.org'
-      - run: npm ci --no-scripts
-      - run: npm run bootstrap
-      - run: npm run run emit
-      - run: npm run run build
-      - run: npm run run lint
-      - run: npm run run test:ci
+      - run: |
+          npm ci --no-scripts
+          npm run bootstrap
+          npm run run emit
+          npm run run build
+          npm run run lint
+          npm run run test:ci
 
   bump:
     if: github.ref == 'refs/heads/main' && !startsWith(github.event.head_commit.message, '[RELEASE]')
@@ -78,9 +79,7 @@ jobs:
           node-version: 18
           cache: "npm"
           registry-url: 'https://registry.npmjs.org'
-      - run: |
-          npm version patch
-          npm publish --access public
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_ADORN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

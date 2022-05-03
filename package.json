@@ -1,6 +1,6 @@
 {
   "name": "adorn",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "Performant and powerful keyword matching and annotation for the DOM",
   "keywords": [
     "annotate",
@@ -33,7 +33,7 @@
   "scripts": {
     "build": "lerna run build && lerna run emit",
     "bootstrap": "lerna bootstrap",
-    "release:patch": "npm version patch --no-commit-hooks --workspaces && git add **/package*.json && npm version patch --no-commit-hooks --include-workspace-root -m \"[RELEASE]: %s\" --force",
+    "release:patch": "npm version patch --no-commit-hooks --workspaces && git add **/package*.json; npm version patch --no-commit-hooks --include-workspace-root -m \"[RELEASE]: %s\" --force",
     "run": "lerna run --stream",
     "clean": "lerna clean",
     "add:dev": "lerna add --dev",
