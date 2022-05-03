@@ -1,6 +1,6 @@
 {
 	"name": "frontend-react",
-	"version": "0.0.0",
+	"version": "1.0.2",
 	"license": "MIT",
 	"scripts": {
 		"//base_scripts": "the building blocks of commandscripts go here",
@@ -21,6 +21,6 @@
 		"react": "^18.0.0",
 		"react-dom": "^18.0.0",
 		"react-router-dom": "^6.3.0",
-		"test-utils": "*"
+		"test-utils": "^1.0.2"
 	}
 }

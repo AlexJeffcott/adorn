@@ -39,7 +39,7 @@
 		"start": "concurrently \"npm:build:dev\" \"npm:emit:dev\" \"npm:test:dev\""
 	},
 	"devDependencies": {
-		"test-utils": "*"
+		"test-utils": "^1.0.2"
 	},
 	"dependencies": {
 		"lodash.throttle": "^4.1.1"
