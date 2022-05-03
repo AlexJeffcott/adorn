@@ -3,7 +3,7 @@ import type { UserConfig } from "@commitlint/types";
 const Configuration: UserConfig = {
   extends: ["@commitlint/config-conventional"],
   rules: {
-    "type-enum": [2, "always", ["ci", "docs", "fix", "revert", "feat", "wip"]],
+    "type-enum": [2, "always", ["[RELEASE]", "docs", "fix", "feat", "wip"]],
   },
 };
 

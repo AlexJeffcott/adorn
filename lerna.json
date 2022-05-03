@@ -5,7 +5,8 @@
   "version": "1.0.2",
   "command": {
     "version": {
-      "allowBranch": "main"
+      "allowBranch": "main",
+      "message": "[RELEASE]:  %s"
     }
   }
 }
