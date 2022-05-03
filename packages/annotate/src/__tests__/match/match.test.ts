@@ -8,7 +8,7 @@ import {
 	replacedKws,
 	extractedDirtyMatches,
 	wrappedKwsWithHtml
-} from 'test-utils';
+} from '@fairfox/test-utils';
 
 const opts = { tag: 'x-a' };
 const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, opts);

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { Match } from '../../';
 import { performance, PerformanceObserver } from 'perf_hooks';
-import { ipsumCaseSensitive, ipsumCaseInsensitive, ipsumText } from 'test-utils';
+import { ipsumCaseSensitive, ipsumCaseInsensitive, ipsumText } from '@fairfox/test-utils';
 
 const opts = { tag: 'x-a' };
 const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, opts);
