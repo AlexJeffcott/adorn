@@ -24,11 +24,16 @@
     "npm": ">=8.X.X",
     "yarn": "USE_NPM_PLEASE"
   },
+  "workspaces": [
+    "packages/annotate",
+    "packages/frontend-react",
+    "packages/test-utils"
+  ],
   "homepage": "https://github.com/AlexJeffcott/adorn#readme",
   "scripts": {
     "build": "lerna run build && lerna run emit",
     "bootstrap": "lerna bootstrap",
-    "release:patch": "lerna version patch --no-commit-hooks --yes",
+    "release:patch": "npm version patch --no-commit-hooks --workspaces && git add **/package.json && npm version patch --no-commit-hooks --include-workspace-root -m \"[RELEASE]: %s\" --force",
     "run": "lerna run --stream",
     "clean": "lerna clean",
     "add:dev": "lerna add --dev",
