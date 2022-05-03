@@ -9,7 +9,7 @@
 		"keyword-extraction",
 		"search-in-text"
 	],
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"author": "Alex Jeffcott",
 	"license": "MIT",
 	"homepage": "https://github.com/AlexJeffcott/adorn#readme",
@@ -39,7 +39,7 @@
 		"start": "concurrently \"npm:build:dev\" \"npm:emit:dev\" \"npm:test:dev\""
 	},
 	"devDependencies": {
-		"test-utils": "^1.0.2"
+		"test-utils": "^1.0.3"
 	},
 	"dependencies": {
 		"lodash.throttle": "^4.1.1"
