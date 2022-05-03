@@ -28,7 +28,7 @@
   "scripts": {
     "build": "lerna run build && lerna run emit",
     "bootstrap": "lerna bootstrap",
-    "release:patch": "lerna release patch --no-git-tag-version --no-commit-hooks --ignore-changes --create-release github",
+    "release:patch": "lerna release patch",
     "run": "lerna run --stream",
     "clean": "lerna clean",
     "add:dev": "lerna add --dev",
