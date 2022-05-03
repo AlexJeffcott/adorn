@@ -55,7 +55,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.head_ref }}
+          ref: main
       - uses: fregante/setup-git-user@v1
       - run: npm version patch -m "[RELEASE] %s"
       - run: git push
@@ -75,7 +75,7 @@ jobs:
           cache: "npm"
           registry-url: 'https://registry.npmjs.org'
       - run: |
-          ls
+          npm version patch
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_ADORN }}
