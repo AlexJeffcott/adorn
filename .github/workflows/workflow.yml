@@ -11,13 +11,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
           cache: "npm"
+          registry-url: 'https://registry.npmjs.org'
       - run: npm ci --no-scripts
       - run: npm run bootstrap
       - run: npm run run emit
@@ -25,23 +26,55 @@ jobs:
       - run: npm run run lint
       - uses: actions/upload-artifact@v3
         with:
-          path: packages/**/build
+          path: |
+            packages/annotate/build
+            packages/annotate/package.json
+            packages/annotate/package-lock.json
+            packages/annotate/README.md
 
   test:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
           cache: "npm"
+          registry-url: 'https://registry.npmjs.org'
       - run: npm ci --no-scripts
       - run: npm run bootstrap
+      - run: npm run run test:ci
+
+  bump:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && !startsWith(github.event.head_commit.message, '[RELEASE]')
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - run: npm version patch -m "[RELEASE] %s"
+      - run: git push
+
+  release:
+    needs: test
+    if: github.ref == 'refs/heads/main' && startsWith(github.event.head_commit.message, '[RELEASE]')
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/download-artifact@v3
         with:
           name: artifact
-          path: packages
-      - run: npm run run test:ci
+          path: .
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+          registry-url: 'https://registry.npmjs.org'
+      - run: |
+          ls
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_ADORN }}
