@@ -1,6 +1,6 @@
 {
   "name": "adorn",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Performant and powerful keyword matching and annotation for the DOM",
   "keywords": [
     "annotate",
@@ -24,7 +24,9 @@
     "npm": ">=8.X.X",
     "yarn": "USE_NPM_PLEASE"
   },
-  "workspaces": ["./packages/*"],
+  "workspaces": [
+    "./packages/*"
+  ],
   "homepage": "https://github.com/AlexJeffcott/adorn#readme",
   "scripts": {
     "clean": "rm -rf node_modules packages/*/node_modules packages/*/build packages/*/dist packages/*/report && npm run clean --workspaces --if-present",
