@@ -11,8 +11,9 @@
 	"scripts": {
 		"//base_scripts": "the building blocks of commandscripts go here",
 		"clean": "rm -rf src/**/*.js src/*.js src/**/*.map.ts src/*.map.ts",
-		"update": "npx npm-check-updates -u",
-		"build": "npm run clean && tsc",
+		"update": "npm-check-updates -u",
+		"emit": "tsc",
+		"build": "tsc",
 		"eslint": "eslint --ignore-path .gitignore --ext .ts --fix .",
 		"prettier": "prettier --ignore-path .gitignore --write .",
 		"jscpd": "jscpd",

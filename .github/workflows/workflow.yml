@@ -21,11 +21,11 @@ jobs:
           cache: "npm"
           registry-url: 'https://registry.npmjs.org'
       - run: |
-          npm ci --no-scripts
+          npm run bootstrap:ci
           npm run emit
           npm run build
           npm run lint
-          npm run test:ci
+          npm run test
 
   bump:
     if: github.ref == 'refs/heads/main' && !startsWith(github.event.head_commit.message, '[RELEASE]')

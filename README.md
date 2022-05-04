@@ -21,6 +21,12 @@ You can optionally listen for DOM mutations and scrolling.
 
 One possible disadvantage of this algorithm is that it does not match substrings and returns the longest match only (if you want to do that then aho-corasick is probably a better choice for you).
 
+
+### Get Started
+The library exposes a Javascript module along with Type definitions. 
+
+You can consume it as an npm package `npm install @fairfox/adorn` or use it via a cdn `import { TextNodesFromDOM, Match, annotateDOM } from 'https://cdn.skypack.dev/@fairfox/adorn?min'`
+
 ### Usage in static HTML
 ```html
 <html lang="en">
@@ -51,7 +57,7 @@ One possible disadvantage of this algorithm is that it does not match substrings
         </p>
     </div>
     <script type="module">
-        import { TextNodesFromDOM, Match, annotateDOM } from '../annotate/build';
+        import { TextNodesFromDOM, Match, annotateDOM } from 'https://cdn.skypack.dev/@fairfox/adorn?min';
     
         const insensitive = new Map([
             ['123', ['Ipsum']],
@@ -75,7 +81,7 @@ One possible disadvantage of this algorithm is that it does not match substrings
 ### Usage in React
 ```javascript
 import { FC, useEffect } from 'react';
-import { TextNodesFromDOM, Match, annotateDOM } from 'annotate';
+import { TextNodesFromDOM, Match, annotateDOM } from '@fairfox/adorn';
 
 const insensitive = new Map([
     ['123', ['Ipsum']],
@@ -112,18 +118,3 @@ const Ipsum: FC = () => {
 }
 ```
 ### Usage in Node
-
-### Developer area
-#### Get started
-```shell
-npm i
-npm run bootstrap
-npm run run start --scope annotate
-npm run run start --scope frontend-react
-npm run run lint --scope frontend-react
-```
-
-#### update deps
-```shell
-npx npm-check-updates -u
-```
