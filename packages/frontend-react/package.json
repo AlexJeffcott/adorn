@@ -13,10 +13,10 @@
 		"prettier": "prettier --ignore-path .gitignore --write .",
 		"jscpd": "jscpd",
 		"//test-workaround": "//force vite to prebundle deps as this is needed for chromium to function correctly in tests",
-		"test-workaround": "wtr **/smoke.tsx --node-resolve --playwright --browsers firefox > /dev/null",
+		"test-workaround": "wtr **/smoke.tsx --node-resolve --playwright --browsers firefox 2>/dev/null 1>/dev/null || true",
 		"//command_scripts": "the compositions of base_scripts go here",
 		"lint": "npm run types && npm run prettier && npm run eslint && npm run jscpd",
-		"test": "npm run test-workaround && wtr **/*.test.tsx --node-resolve --playwright --browsers webkit firefox chromium"
+		"test": "npm run test-workaround && wtr **/*.test.tsx --node-resolve --playwright --browsers firefox chromium"
 	},
 	"dependencies": {
 		"@fairfox/adorn": "file:../annotate",
