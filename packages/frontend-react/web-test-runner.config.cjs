@@ -10,7 +10,7 @@ module.exports = {
 	testRunnerHtml: (testFramework) => `
     <html>
       <head>
-        <script type="module">
+        <script async type="module">
           // Note: globals expected by @testing-library/react
           window.global = window;
           window.process = { env: {} };

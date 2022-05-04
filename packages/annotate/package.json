@@ -10,18 +10,30 @@
 		"search-in-text"
 	],
 	"version": "1.0.10",
+	"exports": {
+		".": {
+			"import": "./build/index.js"
+		}
+	},
 	"author": "Alex Jeffcott",
 	"license": "MIT",
 	"homepage": "https://github.com/AlexJeffcott/adorn#readme",
 	"bugs": {
 		"url": "https://github.com/AlexJeffcott/adorn/issues"
 	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/AlexJeffcott/adorn.git"
+	},
+	"files": [
+		"build/index.js"
+	],
 	"main": "build/index.js",
 	"types": "build/index.d.ts",
 	"type": "module",
 	"scripts": {
 		"//base_scripts": "the building blocks of commandscripts go here",
-		"update": "npx npm-check-updates -u",
+		"update": "npm-check-updates -u",
 		"setup": "printf \"NODE_ENV=DEVELOPMENT\" > .env",
 		"clean": "rm -rf src/*.js src/**/*.js src/*.d.ts src/**/*.d.ts build report",
 		"emit": "tsc -p tsconfig-notestfiles.json --declaration --emitDeclarationOnly --declarationMap --outDir build",
@@ -31,12 +43,13 @@
 		"types": "tsc --noEmit",
 		"prettier": "prettier --ignore-path .gitignore --write .",
 		"jscpd": "jscpd",
+		"checkPkg": "package-check",
 		"//dev_scripts": "building on base scripts for local development",
 		"emit:dev": "npm run emit -- --watch",
 		"test:dev": "npm run test -- --watch",
 		"build:dev": "npm run build -- --watch",
 		"//command_scripts": "the compositions of base_scripts go here",
-		"lint": "npm run types && npm run prettier && npm run eslint && npm run jscpd",
+		"lint": "npm run types && npm run prettier && npm run eslint && npm run jscpd && npm run checkPkg",
 		"start": "concurrently \"npm:build:dev\" \"npm:emit:dev\" \"npm:test:dev\""
 	},
 	"dependencies": {

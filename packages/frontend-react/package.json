@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"scripts": {
 		"//base_scripts": "the building blocks of commandscripts go here",
-		"update": "npx npm-check-updates -u",
+		"update": "npm-check-updates -u",
 		"start": "vite",
 		"build": "vite build",
 		"preview": "vite preview",
@@ -12,9 +12,11 @@
 		"eslint": "eslint --ignore-path .gitignore --fix .",
 		"prettier": "prettier --ignore-path .gitignore --write .",
 		"jscpd": "jscpd",
+		"//test-workaround": "//force vite to prebundle deps as this is needed for chromium to function correctly in tests",
+		"test-workaround": "wtr **/smoke.tsx --node-resolve --playwright --browsers firefox > /dev/null",
 		"//command_scripts": "the compositions of base_scripts go here",
 		"lint": "npm run types && npm run prettier && npm run eslint && npm run jscpd",
-		"test": "wtr **/*.test.tsx --node-resolve --playwright --browsers chromium firefox"
+		"test": "npm run test-workaround && wtr **/*.test.tsx --node-resolve --playwright --browsers webkit firefox chromium"
 	},
 	"dependencies": {
 		"@fairfox/adorn": "file:../annotate",
