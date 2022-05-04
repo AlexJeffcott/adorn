@@ -24,22 +24,17 @@
     "npm": ">=8.X.X",
     "yarn": "USE_NPM_PLEASE"
   },
-  "workspaces": [
-    "packages/annotate",
-    "packages/frontend-react",
-    "packages/test-utils"
-  ],
+  "workspaces": ["./packages/*"],
   "homepage": "https://github.com/AlexJeffcott/adorn#readme",
   "scripts": {
-    "clean": "rm -rf node_modules packages/*/node_modules packages/*/build packages/*/report && npm run clean --workspaces --if-present",
+    "clean": "rm -rf node_modules packages/*/node_modules packages/*/build packages/*/dist packages/*/report && npm run clean --workspaces --if-present",
     "update": "npx npm-check-updates -u && npm run update --workspaces --if-present",
-    "bootstrap": "npm i --include-workspace-root && npm i --workspaces",
-    "bootstrap:ci": "npm ci --include-workspace-root --no-scripts && npm ci --workspaces --no-scripts",
+    "bootstrap": "npm i",
+    "bootstrap:ci": "npm ci --no-scripts",
     "emit": "npm run emit --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "test:ci": "npm run test:ci --workspaces --if-present",
     "release:patch": "npm version patch --no-commit-hooks --workspaces && git add **/package*.json; npm version patch --no-commit-hooks --include-workspace-root -m \"[RELEASE]: %s\" --force",
     "prepare": "husky install"
   },
@@ -48,6 +43,7 @@
     "@actions/github": "^5.0.1",
     "@commitlint/cli": "^16.2.4",
     "@commitlint/config-conventional": "^16.2.4",
+    "@fairfox/test-utils": "file:./packages/test-utils",
     "@rtvision/mocha-esbuild": "^0.1.8",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^14.1.1",
@@ -82,10 +78,5 @@
     "typescript": "^4.6.4",
     "vite": "^2.9.7",
     "vite-web-test-runner-plugin": "^0.1.0"
-  },
-  "dependencies": {
-    "annotate": "file:packages/annotate",
-    "frontend-react": "file:packages/frontend-react",
-    "test-utils": "file:packages/test-utils"
   }
 }

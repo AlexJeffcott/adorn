@@ -53,10 +53,9 @@ jobs:
           node-version: 18
           cache: "npm"
           registry-url: 'https://registry.npmjs.org'
-      - run: npm ci --no-scripts
-      - run: npm run bootstrap
+      - run: npm run bootstrap:ci
       - run: npm run emit
-      - run: npm run build --workspace=annotate
+      - run: npm run build --workspace=@fairfox/adorn
       - uses: actions/upload-artifact@v3
         with:
           path: |

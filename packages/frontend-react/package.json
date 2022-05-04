@@ -17,10 +17,10 @@
 		"test": "wtr **/*.test.tsx --node-resolve --playwright --browsers chromium firefox"
 	},
 	"dependencies": {
-		"annotate": "*",
+		"@fairfox/adorn": "file:../annotate",
+		"@fairfox/test-utils": "file:../test-utils",
 		"react": "^18.1.0",
 		"react-dom": "^18.1.0",
-		"react-router-dom": "^6.3.0",
-		"test-utils": "^1.1.1"
+		"react-router-dom": "^6.3.0"
 	}
 }

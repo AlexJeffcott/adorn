@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
-import { TextNodesFromDOM, Match, annotateDOM } from 'annotate';
-import { ipsumCaseSensitive, ipsumCaseInsensitive } from 'test-utils';
+import { TextNodesFromDOM, Match, annotateDOM } from '@fairfox/adorn';
+import { ipsumCaseSensitive, ipsumCaseInsensitive } from '@fairfox/test-utils';
 import './index.css';
 
 const opts = { tag: 'x-annotate' };

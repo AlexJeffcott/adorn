@@ -39,9 +39,6 @@
 		"lint": "npm run types && npm run prettier && npm run eslint && npm run jscpd",
 		"start": "concurrently \"npm:build:dev\" \"npm:emit:dev\" \"npm:test:dev\""
 	},
-	"devDependencies": {
-		"test-utils": "^1.1.1"
-	},
 	"dependencies": {
 		"lodash.throttle": "^4.1.1"
 	}
