@@ -21,6 +21,7 @@
 	"type": "module",
 	"scripts": {
 		"//base_scripts": "the building blocks of commandscripts go here",
+		"update": "npx npm-check-updates -u",
 		"setup": "printf \"NODE_ENV=DEVELOPMENT\" > .env",
 		"clean": "rm -rf src/*.js src/**/*.js src/*.d.ts src/**/*.d.ts build report",
 		"emit": "tsc -p tsconfig-notestfiles.json --declaration --emitDeclarationOnly --declarationMap --outDir build",
@@ -39,7 +40,7 @@
 		"start": "concurrently \"npm:build:dev\" \"npm:emit:dev\" \"npm:test:dev\""
 	},
 	"devDependencies": {
-		"test-utils": "^1.0.3"
+		"test-utils": "^1.1.1"
 	},
 	"dependencies": {
 		"lodash.throttle": "^4.1.1"
