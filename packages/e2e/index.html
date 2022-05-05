@@ -149,7 +149,7 @@
 						confecti senectute.
 					</li>
 					<li>Verum tamen cum de rebus grandioribus dicas, ipsae res verba rapiunt;</li>
-					<li>Honesta oratio, Socratica, Platonis etiam.</li>
+					<li>Honesta oratio, Socratica, Platonis platonis etiam.</li>
 					<li>
 						Transfer idem ad modestiam vel temperantiam, quae est moderatio cupiditatum rationi
 						oboediens.
@@ -339,15 +339,15 @@
 				</p>
 			</div>
 			<script type="module">
-				// import { TextNodesFromDOM, Match, annotateDOM } from '../annotate/build';
-			import { TextNodesFromDOM, Match, annotateDOM } from 'https://cdn.skypack.dev/@fairfox/adorn?min';
+				import { TextNodesFromDOM, Match, annotateDOM } from '../annotate/build';
+			// import { TextNodesFromDOM, Match, annotateDOM } from 'https://cdn.skypack.dev/@fairfox/adorn?min';
 			const ipsumCI = new Map([
-				['123', ['Quamquam', 'Quonam, inquit, modo']],
-				['456', ['Moriatur', 'arbitrantur', 'Ut pulsi recurrant']],
-				['789', ['vacuitatem doloris non propter utilitatem solum']],
-				['101112', ['pain', 'dolori']]
+				['1', ['Quamquam', 'Quonam, inquit, modo']],
+				['2', ['Moriatur', 'arbitrantur', 'Ut pulsi recurrant']],
+				['3', ['vacuitatem doloris non propter utilitatem solum']],
+				['4', ['pain', 'dolori']]
 			]);
-			const ipsumCS = new Map([['321', ['Aristonem']], ['654', ['Chryippo']], ['978', ['Socratica']], ['121110', ['Platonis']]]);
+			const ipsumCS = new Map([['5', ['Aristonem']], ['6', ['Chryippo']], ['7', ['Socratica']], ['8', ['Platonis']]]);
 			const opts = { tag: 'x-annotate' };
 			const match = new Match(ipsumCI, ipsumCS, opts);
 			const textNodesFromDOM = new TextNodesFromDOM(document.body, [opts.tag.toUpperCase()]);
