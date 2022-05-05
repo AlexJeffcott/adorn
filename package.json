@@ -29,7 +29,7 @@
   ],
   "homepage": "https://github.com/AlexJeffcott/adorn#readme",
   "scripts": {
-    "clean": "rm -rf node_modules **/.temp-mocha* packages/*/node_modules packages/*/build packages/*/dist packages/*/report && npm run clean --workspaces --if-present",
+    "clean": "rm -rf node_modules packages/*/node_modules packages/*/build packages/*/dist packages/*/report && npm run clean --workspaces --if-present",
     "update": "npm-check-updates -u && npm run update --workspaces --if-present",
     "bootstrap": "npm i",
     "bootstrap:ci": "npm ci --no-scripts",

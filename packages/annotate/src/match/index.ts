@@ -1,8 +1,5 @@
 import { getMapAsString, getNonWordBoundaries } from './utils';
 
-/*
-	A JavaScript implementation of https://github.com/vi3k6i5/flashtext adapted for elaborating the found text.
-*/
 type Trie = Map<string | '_kw_', Trie | string>;
 type KwList = Map<string, string[]>;
 type Opts = { tag: string };
@@ -13,14 +10,13 @@ export class Match {
 	private readonly trie: Trie;
 	private readonly opts: Opts;
 
-	constructor(insensitive: KwList, sensitive: KwList, opts: Opts) {
+	constructor(insensitive: KwList | null, sensitive: KwList | null, opts: Opts) {
 		this._kw = '_kw_';
 
 		this.nonWordBoundaries = getNonWordBoundaries();
 
 		this.trie = new Map();
-
-		// todo: check cs and ci maps do not clash
+		this.areKWListsValid(insensitive, sensitive);
 		this.addKws(insensitive, false);
 		this.addKws(sensitive, true);
 		this.opts = opts;
@@ -57,7 +53,38 @@ export class Match {
 		currentTrie.set(this._kw, id);
 	}
 
-	addKws(kwList: KwList, caseSensitive: boolean) {
+	areKWListsValid(insensitive: KwList | null, sensitive: KwList | null): boolean {
+		if (insensitive === null && sensitive === null)
+			throw new Error('please provide a case-sensitive and/or case-insensitive kw map');
+
+		const dedup = (list: string[]) => Array.from(new Set(list));
+
+		const cs: string[] = [];
+		if (sensitive !== null) sensitive.forEach((strList) => strList.forEach((s) => cs.push(s)));
+		// check for duplicates in cs as there should be none
+		// duplicates in lowerCaseCs CAN exist (checking for ['AbcD', 'abCD'] but not ['abcd'])
+		if (dedup(cs).length !== cs.length) throw new Error('case-sensitive map contains duplicates');
+
+		const lowercaseCi: string[] = [];
+		if (insensitive !== null)
+			insensitive.forEach((strList) => strList.forEach((s) => lowercaseCi.push(s.toLowerCase())));
+		// check for duplicates in lowercaseCi as there should be none
+		if (dedup(lowercaseCi).length !== lowercaseCi.length)
+			throw new Error('lower-cased case-insensitive map contains duplicates');
+
+		const lowercaseCs: string[] = cs.map((s) => s.toLowerCase());
+		const mergedLists = [...dedup(lowercaseCs), ...lowercaseCi];
+		// check for duplicates in merged lowercaseCi and dedupedLowercaseCs as there should be none
+		if (dedup(mergedLists).length !== mergedLists.length)
+			throw new Error(
+				'merged lower-cased case-insensitive list and deduped lower-cased case-sensitive map contains duplicates'
+			);
+
+		return true;
+	}
+
+	addKws(kwList: KwList | null, caseSensitive: boolean) {
+		if (kwList === null) return;
 		kwList.forEach((kws, id) => {
 			kws.forEach((kw) => this.addKw(id, kw, caseSensitive));
 		});

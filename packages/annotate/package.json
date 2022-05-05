@@ -35,7 +35,7 @@
 		"//base_scripts": "the building blocks of commandscripts go here",
 		"update": "npm-check-updates -u",
 		"setup": "printf \"NODE_ENV=DEVELOPMENT\" > .env",
-		"clean": "rm -rf src/*.js src/**/*.js src/*.d.ts src/**/*.d.ts build report",
+		"clean": "rm -rf src/*.js .temp* src/**/*.js src/*.d.ts src/**/*.d.ts build report",
 		"emit": "tsc -p tsconfig-notestfiles.json --declaration --emitDeclarationOnly --declarationMap --outDir build",
 		"build": "node .esbuildrc.js",
 		"test": "mocha-esbuild **/*.test.ts",

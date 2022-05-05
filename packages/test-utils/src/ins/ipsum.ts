@@ -8,7 +8,8 @@ const makeWordPairs = (acc: string[], cur: string, index: number) => {
 	return newAcc;
 };
 
-const makeMap = (list: string[], label: 'ci' | 'cs'): Map<string, string[]> => {
+const makeMap = (_list: string[], label: 'ci' | 'cs'): Map<string, string[]> => {
+	const list = Array.from(new Set(_list));
 	const mockMap = new Map();
 
 	for (let i = 0; i < list.length; ) {
@@ -54,24 +55,37 @@ export const ipsumParagraphs = [
 
 const ipsumInsensitiveWords = `${ipsumParagraphs[0]} ${ipsumParagraphs[1]}`
 	.replaceAll(/[,.;]/g, '')
-	.split(' ');
+	.split(' ')
+	.map((s) => s.toLowerCase());
 
 const ipsumInsensitiveWordPairs = `${ipsumParagraphs[2]} ${ipsumParagraphs[3]}`
 	.replaceAll(/[,.;]/g, '')
 	.split(' ')
-	.reduce(makeWordPairs, []);
+	.reduce(makeWordPairs, [])
+	.map((s) => s.toLowerCase());
 
-export const ipsumCaseInsensitive = makeMap(
-	[...ipsumInsensitiveWords, ...ipsumInsensitiveWordPairs],
-	'ci'
-);
+const mergedIpsumCaseInsensitive = [...ipsumInsensitiveWords, ...ipsumInsensitiveWordPairs];
 
-const ipsumSensitiveWords = `${ipsumParagraphs[4]}`.replaceAll(/[,.;]/g, '').split(' ');
+export const ipsumCaseInsensitive = makeMap(mergedIpsumCaseInsensitive, 'ci');
+
+const ipsumSensitiveWords = `${ipsumParagraphs[4]}`
+	.replaceAll(/[,.;]/g, '')
+	.split(' ')
+	.reduce((acc: string[], cur) => {
+		if (mergedIpsumCaseInsensitive.find((s) => s === cur.toLowerCase())) return acc;
+		acc.push(cur);
+		return acc;
+	}, []);
 
 const ipsumSensitiveWordPairs = `${ipsumParagraphs[5]}}}`
 	.replaceAll(/[,.;]/g, '')
 	.split(' ')
-	.reduce(makeWordPairs, []);
+	.reduce(makeWordPairs, [])
+	.reduce((acc: string[], cur) => {
+		if (mergedIpsumCaseInsensitive.find((s) => s === cur.toLowerCase())) return acc;
+		acc.push(cur);
+		return acc;
+	}, []);
 
 export const ipsumCaseSensitive = makeMap(
 	[...ipsumSensitiveWords, ...ipsumSensitiveWordPairs],
