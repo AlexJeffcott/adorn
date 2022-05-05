@@ -1,6 +1,6 @@
 {
 	"name": "@fairfox/test-utils",
-	"version": "1.0.11",
+	"version": "1.0.12",
 	"description": "Testing utils and mocks for adorn",
 	"keywords": [],
 	"author": "Alex Jeffcott",
