@@ -58,9 +58,9 @@ describe('match should', () => {
 		);
 	});
 
-	it('getMatchIndexes correctly', () => {
+	it('getMatchIndexes correctly when string terminates on match', () => {
 		const text =
-			'Here is a text for testing abc purposes ABC with some matches def here and DEF there VUT.mnop-qr2';
+			'abc Here is a text for testing abc purposes ABC with some matches def here and DEF there VUT.mnop-qr2';
 		const ipsumCaseInsensitive = new Map([['ci', ['abc', 'def', 'ghi jkl', 'mnop-qr2']]]);
 		const ipsumCaseSensitive = new Map([['cs', ['ZXY', 'VUT']]]);
 		const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, { tag: 'x-a' });
@@ -68,12 +68,34 @@ describe('match should', () => {
 		const res = match.getMatchIndexes(text);
 		expect(JSON.stringify(res)).to.equal(
 			JSON.stringify([
-				['ci', 27, 29],
-				['ci', 40, 42],
-				['ci', 62, 64],
-				['ci', 75, 77],
-				['cs', 85, 87],
-				['ci', 89, 95]
+				['ci', 0, 2],
+				['ci', 31, 33],
+				['ci', 44, 46],
+				['ci', 66, 68],
+				['ci', 79, 81],
+				['cs', 89, 91],
+				['ci', 93, 100]
+			])
+		);
+	});
+
+	it('getMatchIndexes correctly when string does not terminates on match', () => {
+		const text =
+			'abc Here is a text for testing abc purposes ABC with some matches def here and DEF there VUT.mnop-qr2 ';
+		const ipsumCaseInsensitive = new Map([['ci', ['abc', 'def', 'ghi jkl', 'mnop-qr2']]]);
+		const ipsumCaseSensitive = new Map([['cs', ['ZXY', 'VUT']]]);
+		const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, { tag: 'x-a' });
+
+		const res = match.getMatchIndexes(text);
+		expect(JSON.stringify(res)).to.equal(
+			JSON.stringify([
+				['ci', 0, 2],
+				['ci', 31, 33],
+				['ci', 44, 46],
+				['ci', 66, 68],
+				['ci', 79, 81],
+				['cs', 89, 91],
+				['ci', 93, 100]
 			])
 		);
 	});
@@ -92,7 +114,7 @@ describe('match should', () => {
 			JSON.stringify([
 				['long', 0, 3],
 				['short', 5, 7],
-				['long', 9, 11]
+				['long', 9, 12]
 			])
 		);
 	});

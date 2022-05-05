@@ -110,7 +110,7 @@ export class Match {
 			if (!hasChar || i === len - 1) {
 				if (foundId) {
 					if (matchStart === null) throw new Error('!!!matchStart is null in getMatchIndexes!!!');
-					matchEnd = i - 1;
+					matchEnd = hasChar ? i : i - 1;
 					idsWithIndexes.push([foundId, matchStart, matchEnd]);
 				}
 				currentTrie = this.trie;
