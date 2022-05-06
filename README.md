@@ -4,7 +4,13 @@
 
 ### Background and Inspiration
 
-Want keyword matching for large amounts of text (with large numbers of keywords) in Javascript-friendly environments? Want to leverage knowledge resources to enrich a website's content without the overhead of curating and maintaining the extra content? Want to add interactive elements (whether simply styling, links, or tooltips or something more complex) based on a user's profile or settings? Adorn your content nimbly, but with power and precision.
+Want keyword matching for large amounts of text (with large numbers of keywords) in Javascript-friendly environments?
+
+Want to leverage knowledge resources to enrich a website's content without the overhead of curating and maintaining the extra content?
+
+Want to add interactive elements (whether simply styling, links, or tooltips or something more complex) based on a user's profile or settings?
+
+Adorn your content nimbly, but with power and precision.
 
 ### Performance
 
@@ -28,55 +34,52 @@ One possible disadvantage of this algorithm is that it does not match substrings
 ### Some examples
 While the below examples showcase htmlWrapping via annotateDOM with a [custom element](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements), there is no reason not to take a simpler approach and add a class, or inline styles, or even an anchor link with an href calculated from the matched keyword.
 
+[Checkout the React Typescript codesandbox](https://codesandbox.io/s/adorn-react-0vbwqo)
+
 #### Usage in static HTML as a Javascript plugin
 
 ```html
 <html lang="en">
-	<head>
-		<style>
-			#root {
-				height: 2500px;
-			}
-			x-annotate {
-				border-bottom-color: cadetblue;
-				border-bottom-style: solid;
-				border-bottom-width: 2px;
-			}
-		</style>
-	</head>
-	<body>
-		<div id="content">
-			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. In cursus cursus enim eu
-				scelerisque. Nam eleifend purus sed quam facilisis aliquet. Fusce feugiat neque elit, non
-				egestas ipsum molestie quis. Suspendisse quis ipsum malesuada, scelerisque tellus quis,
-				auctor tortor. Nam gravida dolor at molestie facilisis. Donec faucibus nisl vitae ante
-				accumsan, id vulputate lorem convallis. Integer condimentum nunc turpis, eget pellentesque
-				nunc gravida nec. Maecenas in tincidunt eros. Nullam ac feugiat turpis. Interdum et
-				malesuada fames ac ante ipsum primis in faucibus. Nullam at posuere urna. Phasellus
-				fermentum dolor nec sapien congue feugiat. Duis aliquam, ex finibus porttitor viverra, quam
-				augue gravida dui, quis cursus purus justo a mi.
-			</p>
-		</div>
-		<script type="module">
-			import { TextNodesFromDOM, Match, annotateDOM } from '../annotate/build';
+<head>
+    <style>
+        x-annotate {
+            border-bottom-color: cadetblue;
+            border-bottom-style: solid;
+            border-bottom-width: 2px;
+        }
+    </style>
+</head>
+<body>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In cursus cursus enim eu
+    scelerisque. Nam eleifend purus sed quam facilisis aliquet. Fusce feugiat neque elit, non
+    egestas ipsum molestie quis. Suspendisse quis ipsum malesuada, scelerisque tellus quis,
+    auctor tortor. Nam gravida dolor at molestie facilisis. Donec faucibus nisl vitae ante
+    accumsan, id vulputate lorem convallis. Integer condimentum nunc turpis, eget pellentesque
+    nunc gravida nec. Maecenas in tincidunt eros. Nullam ac feugiat turpis. Interdum et
+    malesuada fames ac ante ipsum primis in faucibus. Nullam at posuere urna. Phasellus
+    fermentum dolor nec sapien congue feugiat. Duis aliquam, ex finibus porttitor viverra, quam
+    augue gravida dui, quis cursus purus justo a mi.
+  </p>
+  <script type="module">
+    import { TextNodesFromDOM, Match, annotateDOM } from '../annotate/build';
 
-			const insensitive = new Map([
-				['123', ['Ipsum']],
-				['456', ['neque']],
-				['789', ['Ut']]
-			]);
-			const sensitive = new Map([['321', ['Nullam']]]);
-			const opts = { tag: 'x-annotate', getAttrs: (id: string) => `data-match-id="${id}"`};
+    const insensitive = new Map([
+        ['123', ['Ipsum']],
+        ['456', ['neque']],
+        ['789', ['Ut']]
+    ]);
+    const sensitive = new Map([['321', ['Nullam']]]);
+    const opts = { tag: 'x-annotate', getAttrs: (id) => `data-match-id="${id}"`};
 
-			const match = new Match(insensitive, sensitive, opts);
-			const textNodesFromDOM = new TextNodesFromDOM(document.body, [opts.tag.toUpperCase()]);
+    const match = new Match(insensitive, sensitive, opts);
+    const textNodesFromDOM = new TextNodesFromDOM(document.body, [opts.tag.toUpperCase()]);
 
-			annotateDOM(textNodesFromDOM.walk(document.body), match);
-			textNodesFromDOM.watchDOM((ns) => annotateDOM(ns, match));
-			textNodesFromDOM.watchScroll((ns) => annotateDOM(ns, match));
-		</script>
-	</body>
+    annotateDOM(textNodesFromDOM.walk(document.body), match);
+    textNodesFromDOM.watchDOM((ns) => annotateDOM(ns, match));
+    textNodesFromDOM.watchScroll((ns) => annotateDOM(ns, match));
+  </script>
+</body>
 </html>
 ```
 
@@ -97,26 +100,24 @@ const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, opts);
 const textNodesFromDOM = new TextNodesFromDOM(document.body, [opts.tag.toUpperCase()]);
 
 const Ipsum: FC = () => {
-	useEffect(() => {
-		annotateDOM(textNodesFromDOM.walk(document.body), match);
-		const scrollCB = textNodesFromDOM.watchScroll((ns: Node[]) => annotateDOM(ns, match));
-		return () => textNodesFromDOM.endWatchScroll(scrollCB);
-	}, []);
+  useEffect(() => {
+    annotateDOM(textNodesFromDOM.walk(document.body), match);
+    const scrollCB = textNodesFromDOM.watchScroll((ns: Node[]) => annotateDOM(ns, match));
+    return () => textNodesFromDOM.endWatchScroll(scrollCB);
+  }, []);
 
-	return (
-		<div className="content">
-			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. In cursus cursus enim eu
-				scelerisque. Nam eleifend purus sed quam facilisis aliquet. Fusce feugiat neque elit, non
-				egestas ipsum molestie quis. Suspendisse quis ipsum malesuada, scelerisque tellus quis,
-				auctor tortor. Nam gravida dolor at molestie facilisis. Donec faucibus nisl vitae ante
-				accumsan, id vulputate lorem convallis. Integer condimentum nunc turpis, eget pellentesque
-				nunc gravida nec. Maecenas in tincidunt eros. Nullam ac feugiat turpis. Interdum et
-				malesuada fames ac ante ipsum primis in faucibus. Nullam at posuere urna. Phasellus
-				fermentum dolor nec sapien congue feugiat. Duis aliquam, ex finibus porttitor viverra, quam
-				augue gravida dui, quis cursus purus justo a mi.
-			</p>
-		</div>
-	);
+  return (
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. In cursus cursus enim eu
+      scelerisque. Nam eleifend purus sed quam facilisis aliquet. Fusce feugiat neque elit, non
+      egestas ipsum molestie quis. Suspendisse quis ipsum malesuada, scelerisque tellus quis,
+      auctor tortor. Nam gravida dolor at molestie facilisis. Donec faucibus nisl vitae ante
+      accumsan, id vulputate lorem convallis. Integer condimentum nunc turpis, eget pellentesque
+      nunc gravida nec. Maecenas in tincidunt eros. Nullam ac feugiat turpis. Interdum et
+      malesuada fames ac ante ipsum primis in faucibus. Nullam at posuere urna. Phasellus
+      fermentum dolor nec sapien congue feugiat. Duis aliquam, ex finibus porttitor viverra, quam
+      augue gravida dui, quis cursus purus justo a mi.
+    </p>
+  );
 };
 ```
