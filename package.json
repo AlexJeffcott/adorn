@@ -1,6 +1,6 @@
 {
   "name": "adorn",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Performant and powerful keyword matching and annotation for the DOM",
   "keywords": [
     "annotate",
