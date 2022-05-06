@@ -144,14 +144,14 @@ describe('match should', () => {
 				['cs-1', ['xMwad']]
 			];
 			const ci: Array<[string, string[]]> = [
-				['ci-0', ['VakgUb']],
+				['ci-0', ['VakgUb ']],
 				['ci-1', ['0tsNyfd2']]
 			];
 			const match = new Match(new Map(ci), new Map(cs), { tag: 'x-a' });
 			const strOfRnd =
-				'QPT13rJz Auyo RIoVPLq9eSVO xMwad 3-qoli YJrJVuyDR 0tsNyfd2 xmwad JsFcwSeS8DZ pklv PckJ vakgub qAuyo';
+				'QPT13rJz Auyo RIoVPLq9eSVO xMwad 3-qoli YJrJVuyDR 0tsNyfd2 xmwad JsFcwSeS8DZ pklv PckJ vakgub  qAuyo';
 			const replacedHtml =
-				'QPT13rJz <x-a data-match-id="cs-0">Auyo</x-a> RIoVPLq9eSVO <x-a data-match-id="cs-1">xMwad</x-a> 3-qoli YJrJVuyDR <x-a data-match-id="ci-1">0tsNyfd2</x-a> xmwad JsFcwSeS8DZ pklv PckJ <x-a data-match-id="ci-0">vakgub</x-a> qAuyo';
+				'QPT13rJz <x-a data-match-id="cs-0">Auyo</x-a> RIoVPLq9eSVO <x-a data-match-id="cs-1">xMwad</x-a> 3-qoli YJrJVuyDR <x-a data-match-id="ci-1">0tsNyfd2</x-a> xmwad JsFcwSeS8DZ pklv PckJ <x-a data-match-id="ci-0">vakgub </x-a> qAuyo';
 
 			const res = match.wrapKwsWithHtml(strOfRnd);
 			expect(res).to.equal(replacedHtml);
@@ -252,26 +252,26 @@ describe('match should', () => {
 			'cs-6'
 		];
 		const dirtyMatchesMap = new Map([
-			['ci-0', 'VakgUb'],
-			['ci-8', 'qhod3lv'],
-			['ci-5', 'k gx-'],
-			['ci-3', 'utc1fv'],
-			['cs-9', '9kA79'],
-			['ci-4', 'POmQa6JxTO3Lc'],
-			['cs-3', 'UMte'],
-			['ci-2', 'mnr'],
-			['ci-7', 'krmbcrzm'],
-			['ci-1', '0tsNyfd'],
-			['ci-6', 'OVxZ'],
-			['cs-0', 'Auy'],
-			['ci-9', 'S7zCaau-ud ue'],
-			['cs-8', 'kba'],
-			['cs-1', 'xMwa'],
-			['cs-5', 'zCCq'],
-			['cs-2', '1OcS C'],
-			['cs-7', 'pja3'],
-			['cs-4', 'SbcO1OWS'],
-			['cs-6', '1 4FP']
+			['ci-0', 'VakgUb '],
+			['ci-8', 'qhod3lvs'],
+			['ci-5', 'k gx-x'],
+			['ci-3', 'utc1fvt'],
+			['cs-9', '9kA79X'],
+			['ci-4', 'POmQa6JxTO3Lc2'],
+			['cs-3', 'UMteA'],
+			['ci-2', 'mnrs'],
+			['ci-7', 'krmbcrzml'],
+			['ci-1', '0tsNyfd2'],
+			['ci-6', 'OVxZC'],
+			['cs-0', 'Auyo'],
+			['ci-9', 'S7zCaau-ud ueT'],
+			['cs-8', 'kbaW'],
+			['cs-1', 'xMwad'],
+			['cs-5', 'zCCqT'],
+			['cs-2', '1OcS CX'],
+			['cs-7', 'pja3T'],
+			['cs-4', 'SbcO1OWSb'],
+			['cs-6', '1 4FPz']
 		]);
 		const strOfRnd =
 			'QPT13rJz RIoVPLq9eSVO 3-qoli YJrJVuyDR xmwad JsFcwSeS8DZ pklv PckJ vakgub  a2VO2tEYt t5 eN  QhoD3lvS M T0-p pja3t rn6tzs HgicR O0zqQUIyCFhmN 5kWnTlb 2Cr5E5o6 pDnM0Xyb9 Wd jWjvs2pu IspPxunGL flTb 4koos ieTw5o K gX-X uTC1FVt cTAUQ EiNJvhc ZY3oklhmLPUF 8VRapahgas88K j7qNMiJrmv6IS 15e3T9gYrUDXvA lIcXE IOfV7YI7BEAL 9kA79X o1F9 MH0mruj2t Jqefz O cqk8 UJy5IQTlkQm pomqa6jxto3lc2 GpkYBAs4NuQjJ oo0dFjTp7 9OZVxJZx SxVZL 35wz6AmQfMzb 5dxfjqBcWVwvP ukJ9faA7cwOOe MqlXpyEvx t03kNl hhA3Ff-T OaF UzmsIp UMteA mnrs TrbKEiEaVZ m-Jch75 rb6G auyo krmbCRZML 0tsnyfd2 i 5eKuM0Y8RX 0tsNyfd2 WVdT77Rqg8VvRq aBCW- pgdKw OeJcBAh0kINWO CJJGPBtrtPVg-g ovxzc EivCBcBI5SK9u ZLG8x6uj1H3agJ Auyo  p7bZmw7NQr LoIbGhvegSNr3M s7zcaau-ud uet nV3IHWK OES6P O9qI84hh 5uapQ kbaW Z9twJ7ohC umtea xMwad 0sCeFqZWyH1 EUO8AejlPA3TNH 8y9VHTMyjwf zCCqT sbco1owsb sPJlkRunRJ f8E7FfgSN6H 8yCBmPnDITt FonpivxmC r2JnUTwf0iui T3uMK PSjNOLoBA dYZV6sWkGz9 qhod3lvs Um VxAJiIqQX sfaDX zccqt DmzJF HosEmMrE 1mCxxSDRXVvqxm 1ocs cx OVxZC TXQ00BZCZ JvPFEbcr3R HAX7-fIFL1C xjLF5pZ8 pAOHbKkj4SM80 kbaw  QAuDgYFaOvZm 1OcS CX VakgUb  yzVfcOHuJmmi1 1 4fpz eKCzRrK0uV4 jkiK meFOT cI 9ka79x cuIkCGYKvjtK0T pja3T jXLggbzRVrfD97 POmQa6JxTO3Lc2 utc1fvt mnrs 34bvD iiyQ-Xs0FcI 21rVhQnO9CbZ aG8SQTe oLVnIkK8RPfZ9 k gx-x nngb1Cn SbcO1OWSb cO aA 0kjtIcK S7zCaau-ud ueT C3oU-UvE0YJ0 1 4FPz sbiIO4WN DDpPapx fcBn hzUsY bpgmwPkm krmbcrzml Auyoq';
