@@ -64,11 +64,11 @@ const ipsumInsensitiveWordPairs = `${ipsumParagraphs[2]} ${ipsumParagraphs[3]}`
 	.reduce(makeWordPairs, [])
 	.map((s) => s.toLowerCase());
 
-const mergedIpsumCaseInsensitive = [...ipsumInsensitiveWords, ...ipsumInsensitiveWordPairs];
+export const mergedIpsumCaseInsensitive = [...ipsumInsensitiveWords, ...ipsumInsensitiveWordPairs];
 
 export const ipsumCaseInsensitive = makeMap(mergedIpsumCaseInsensitive, 'ci');
 
-const ipsumSensitiveWords = `${ipsumParagraphs[4]}`
+export const ipsumSensitiveWords = `${ipsumParagraphs[7]}`
 	.replaceAll(/[,.;]/g, '')
 	.split(' ')
 	.reduce((acc: string[], cur) => {
@@ -77,7 +77,7 @@ const ipsumSensitiveWords = `${ipsumParagraphs[4]}`
 		return acc;
 	}, []);
 
-const ipsumSensitiveWordPairs = `${ipsumParagraphs[5]}}}`
+export const ipsumSensitiveWordPairs = `${ipsumParagraphs[8]}}}`
 	.replaceAll(/[,.;]/g, '')
 	.split(' ')
 	.reduce(makeWordPairs, [])

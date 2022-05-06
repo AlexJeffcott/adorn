@@ -36,7 +36,6 @@
     "emit": "npm run emit --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
-    "setup-tests": "playwright install --with-deps chromium firefox webkit",
     "test": "npm run test --workspaces --if-present",
     "release:patch": "npm version patch --no-commit-hooks --workspaces && git add **/package*.json; npm version patch --no-commit-hooks --include-workspace-root -m \"[RELEASE]: %s\" --force",
     "prepare": "husky install"
