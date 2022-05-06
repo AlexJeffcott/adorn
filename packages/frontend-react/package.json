@@ -1,6 +1,6 @@
 {
 	"name": "frontend-react",
-	"version": "1.0.13",
+	"version": "1.0.14",
 	"license": "MIT",
 	"scripts": {
 		"//base_scripts": "the building blocks of commandscripts go here",
