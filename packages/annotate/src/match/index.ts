@@ -97,7 +97,7 @@ export class Match {
 		let matchStart: null | number = null;
 		let matchEnd: null | number = null;
 		let foundId: boolean | string = false;
-		let hasChar: boolean = false;
+		let hasChar = false;
 
 		for (let i = 0; i <= len; i++) {
 			if (len === i && foundId) {
@@ -151,7 +151,7 @@ export class Match {
 	extractDirtyMatches(sentence: string) {
 		const dirtyMatches: Array<[string, string]> = this.getMatchIndexes(sentence).map((match) => [
 			match[0],
-			sentence.slice(match[1], match[2])
+			sentence.slice(match[1], match[2] + 1)
 		]);
 
 		return new Map(dirtyMatches);
