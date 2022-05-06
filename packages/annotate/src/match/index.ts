@@ -7,7 +7,8 @@ type Opts = { tag: string };
 export class Match {
 	private readonly _kw: '_kw_';
 	private nonWordBoundaries: Set<string>;
-	private readonly trie: Trie;
+	private readonly trieCI: Trie;
+	private readonly trieCS: Trie;
 	private readonly opts: Opts;
 
 	constructor(insensitive: KwList | null, sensitive: KwList | null, opts: Opts) {
@@ -15,7 +16,8 @@ export class Match {
 
 		this.nonWordBoundaries = getNonWordBoundaries();
 
-		this.trie = new Map();
+		this.trieCI = new Map();
+		this.trieCS = new Map();
 		this.areKWListsValid(insensitive, sensitive);
 		this.addKws(insensitive, false);
 		this.addKws(sensitive, true);
@@ -24,7 +26,9 @@ export class Match {
 
 	getDetails() {
 		return {
-			trieAsString: getMapAsString(this.trie)
+			trieAsString: `CI ===> ${getMapAsString(this.trieCI)} || CS ===> ${getMapAsString(
+				this.trieCS
+			)}`
 		};
 	}
 
@@ -34,7 +38,7 @@ export class Match {
 	 * @param caseSensitive is whether to ONLY map the chars with their given case
 	 */
 	addKw(id: string, keyword: string, caseSensitive: boolean) {
-		let currentTrie = this.trie;
+		let currentTrie = caseSensitive ? this.trieCS : this.trieCI;
 
 		keyword.split('').forEach((char) => {
 			if (caseSensitive) {
@@ -93,54 +97,66 @@ export class Match {
 	getMatchIndexes(sentence: string) {
 		const idsWithIndexes: Array<[string, number, number]> = [];
 		const len = sentence.length;
-		let currentTrie = this.trie;
+		let currentTrie = null as unknown as Trie;
 		let matchStart: null | number = null;
 		let matchEnd: null | number = null;
-		let foundId: boolean | string = false;
+		let foundId = '';
 		let hasChar = false;
 
-		for (let i = 0; i <= len; i++) {
-			if (len === i && foundId) {
-				// if you reach the end of the sentence, and you have a foundId then push it to the list and break.
-				// this is to catch matches that terminate a sentence like where 'match' is found 'at the end of the phrase match'
-				if (matchStart === null) throw new Error('!!!matchStart is null in getMatchIndexes!!!');
-				matchEnd = i - 1;
-				idsWithIndexes.push([foundId, matchStart, matchEnd]);
-				break;
-			}
+		const pass = (caseSensitive: boolean) => {
+			currentTrie = caseSensitive ? this.trieCS : this.trieCI;
+			matchStart = null;
+			matchEnd = null;
+			foundId = '';
+			hasChar = false;
 
-			const previousCharIsNonWordBoundary =
-				i === 0 ? true : !this.nonWordBoundaries.has(sentence[i - 1]);
-
-			const char = sentence[i];
-
-			const charIsNonWordBoundary = !this.nonWordBoundaries.has(char);
-
-			hasChar = currentTrie.has(char);
-
-			if (hasChar && matchStart === null && previousCharIsNonWordBoundary) {
-				matchStart = i;
-			}
-
-			if (matchStart === null) continue;
-
-			if (hasChar) currentTrie = currentTrie.get(char) as Trie;
-
-			foundId = currentTrie.has(this._kw) && (currentTrie.get(this._kw) as string);
-
-			// if the current char in the sentence does not have an entry in the currentTrie
-			if (!hasChar) {
-				if (foundId && charIsNonWordBoundary) {
+			for (let i = 0; i <= len; i++) {
+				if (len === i && foundId) {
+					// if you reach the end of the sentence, and you have a foundId then push it to the list and break.
+					// this is to catch matches that terminate a sentence like where 'match' is found 'at the end of the phrase match'
+					if (matchStart === null) throw new Error('!!!matchStart is null in getMatchIndexes!!!');
 					matchEnd = i - 1;
 					idsWithIndexes.push([foundId, matchStart, matchEnd]);
+					break;
 				}
-				currentTrie = this.trie;
-				foundId = false;
-				matchStart = null;
-				matchEnd = null;
+
+				const previousCharIsNonWordBoundary =
+					i === 0 ? true : !this.nonWordBoundaries.has(sentence[i - 1]);
+
+				const char = sentence[i];
+
+				const charIsNonWordBoundary = !this.nonWordBoundaries.has(char);
+
+				hasChar = currentTrie.has(char);
+
+				if (hasChar && matchStart === null && previousCharIsNonWordBoundary) {
+					matchStart = i;
+				}
+
+				if (matchStart === null) continue;
+
+				if (hasChar) currentTrie = currentTrie.get(char) as Trie;
+
+				foundId = currentTrie.has(this._kw) ? (currentTrie.get(this._kw) as string) : '';
+
+				// if the current char in the sentence does not have an entry in the currentTrie
+				if (!hasChar) {
+					if (foundId && charIsNonWordBoundary) {
+						matchEnd = i - 1;
+						idsWithIndexes.push([foundId, matchStart, matchEnd]);
+					}
+					currentTrie = caseSensitive ? this.trieCS : this.trieCI;
+					foundId = '';
+					matchStart = null;
+					matchEnd = null;
+				}
 			}
-		}
-		return idsWithIndexes;
+		};
+
+		if (this.trieCI !== null) pass(false);
+		if (this.trieCS !== null) pass(true);
+
+		return idsWithIndexes.sort((a, b) => a[1] - b[1]);
 	}
 
 	extractMatchIds(sentence: string) {
