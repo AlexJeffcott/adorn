@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Adorn</title>
+    <style>
+        pre {
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            background-color: #f6f8fa;
+            border-radius: 6px;
+        }
+        .pl-c1 ,
+        .pl-s .pl-v  {
+            color: #005cc5;
+        }
+
+        .pl-e ,
+        .pl-en  {
+            color: #6f42c1;
+        }
+
+        .pl-smi ,
+        .pl-s .pl-s1  {
+            color: #24292e;
+        }
+
+        .pl-ent  {
+            color: #22863a;
+        }
+
+        .pl-k  {
+            color: #d73a49;
+        }
+
+        .pl-s ,
+        .pl-pds ,
+        .pl-s .pl-pse .pl-s1 ,
+        .pl-sr ,
+        .pl-sr .pl-cce ,
+        .pl-sr .pl-sre ,
+        .pl-sr .pl-sra  {
+            color: #032f62;
+        }
+
+        .pl-v ,
+        .pl-smw  {
+            color: #e36209;
+        }
+
+        .pl-bu  {
+            color: #b31d28;
+        }
+
+        .pl-ii  {
+            color: #fafbfc;
+            background-color: #b31d28;
+        }
+
+        .pl-c2  {
+            color: #fafbfc;
+            background-color: #d73a49;
+        }
+
+        .pl-c2::before  {
+            content: "^M";
+        }
+
+        .pl-sr .pl-cce  {
+            font-weight: bold;
+            color: #22863a;
+        }
+
+        .pl-ml  {
+            color: #735c0f;
+        }
+
+        .pl-mh ,
+        .pl-mh .pl-en ,
+        .pl-ms  {
+            font-weight: bold;
+            color: #005cc5;
+        }
+
+        .pl-mi  {
+            font-style: italic;
+            color: #24292e;
+        }
+
+        .pl-mb  {
+            font-weight: bold;
+            color: #24292e;
+        }
+
+        .pl-md  {
+            color: #b31d28;
+            background-color: #ffeef0;
+        }
+
+        .pl-mi1  {
+            color: #22863a;
+            background-color: #f0fff4;
+        }
+
+        .pl-mc  {
+            color: #e36209;
+            background-color: #ffebda;
+        }
+
+        .pl-mi2  {
+            color: #f6f8fa;
+            background-color: #005cc5;
+        }
+
+        .pl-mdr  {
+            font-weight: bold;
+            color: #6f42c1;
+        }
+
+        .pl-ba  {
+            color: #586069;
+        }
+
+        .pl-sg  {
+            color: #959da5;
+        }
+
+        .pl-corl  {
+            text-decoration: underline;
+            color: #032f62;
+        }
+    </style>
+</head>
+<body>
+<h1>Adorn</h1>
+<h2>Performant and powerful keyword matching, extraction and annotation for the DOM</h2>
+<h3 id="background-and-inspiration">Background and Inspiration</h3>
+<p>Want keyword matching for large amounts of text (with large numbers of keywords) in Javascript-friendly environments?</p>
+<p>Want to leverage knowledge resources to enrich a website&#39;s content without the overhead of curating and maintaining the extra content?</p>
+<p>Want to add interactive elements (whether simply styling, links, or tooltips or something more complex) based on a user&#39;s profile or settings?</p>
+<p>Adorn your content nimbly, but with power and precision.</p>
+
+<h3 id="performance">Performance</h3>
+<p>The <a href="https://en.wikipedia.org/wiki/Time_complexity">complexity</a> of the <a href="https://arxiv.org/abs/1711.00046">FlashText algorithm</a> is linear and can search or replace keywords in one pass over a document. The time complexity of this algorithm is not dependent on the number of terms being searched or replaced. So for a document of size N (characters) and a dictionary of M keywords, the time complexity will be O(n). It is much faster than Regex, because regex time complexity is O(MxN).</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm">Aho–Corasick algorithm</a>, by contrast, is linear in the length of the strings plus the length of the searched text plus the number of output matches.</p>
+<h3 id="power">Power</h3>
+<p>There are several methods available depending on what you wish to achieve including, a simple list of match ids, a list of &#39;dirty&#39; matches, the full text returned with matches wrapped in a custom tag.</p>
+<p>It is ready to be used in static html and plain text, in Node and in the Browser. There is also support for simple implementation in React.</p>
+<p>It is possible to have case-insensitive AND case-sensitive matches in the same Match instance. In other words, the flower &#39;rose&#39; is not matched when looking for the name &#39;Rose&#39; but both &#39;flower&#39; and &#39;Flower&#39; can be matched in the same matcher instance unlike the original flash-text implementation.</p>
+<p>You can optionally listen for DOM mutations and scrolling.</p>
+<p>One possible disadvantage of this algorithm is that it does not match substrings and returns the longest match only (if you want to do that then aho-corasick is probably a better choice for you).</p>
+
+<h3 id="some-examples">Some examples</h3>
+<p>While the below examples showcase htmlWrapping via annotateDOM with a <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements">custom element</a>, there is no reason not to take a simpler approach and add a class, or inline styles, or even an anchor link with an href calculated from the matched keyword.</p>
+You can see some working examples in <a href="./sandboxes.html">sandboxes</a> or checkout <a href="./ipsum-example.html">a Lorem ipsum example</a>.
+
+<h4 id="usage-in-static-html-as-a-javascript-plugin">Usage in static HTML as a Javascript plugin</h4>
+<div class="highlight highlight-text-html-basic position-relative overflow-auto"><pre><span class="pl-kos">&lt;</span><span class="pl-ent">html</span> <span class="pl-c1">lang</span>="<span class="pl-s">en</span>"<span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">head</span><span class="pl-kos">&gt;</span>
+    <span class="pl-kos">&lt;</span><span class="pl-ent">style</span><span class="pl-kos">&gt;</span>
+        <span class="pl-kos">#</span><span class="pl-c1">root</span> {
+            <span class="pl-c1">height</span><span class="pl-kos">:</span> <span class="pl-c1">2500<span class="pl-smi">px</span></span>;
+        }
+        <span class="pl-ent">x-annotate</span> {
+            <span class="pl-c1">border-bottom-color</span><span class="pl-kos">:</span> cadetblue;
+            <span class="pl-c1">border-bottom-style</span><span class="pl-kos">:</span> solid;
+            <span class="pl-c1">border-bottom-width</span><span class="pl-kos">:</span> <span class="pl-c1">2<span class="pl-smi">px</span></span>;
+        }
+    <span class="pl-kos">&lt;/</span><span class="pl-ent">style</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">head</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">body</span><span class="pl-kos">&gt;</span>
+    <span class="pl-kos">&lt;</span><span class="pl-ent">div</span> <span class="pl-c1">id</span>="<span class="pl-s">content</span>"<span class="pl-kos">&gt;</span>
+        <span class="pl-kos">&lt;</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. In cursus cursus enim eu
+            scelerisque. Nam eleifend purus sed quam facilisis aliquet. Fusce feugiat neque elit, non
+            egestas ipsum molestie quis. Suspendisse quis ipsum malesuada, scelerisque tellus quis,
+            auctor tortor. Nam gravida dolor at molestie facilisis. Donec faucibus nisl vitae ante
+            accumsan, id vulputate lorem convallis. Integer condimentum nunc turpis, eget pellentesque
+            nunc gravida nec. Maecenas in tincidunt eros. Nullam ac feugiat turpis. Interdum et
+            malesuada fames ac ante ipsum primis in faucibus. Nullam at posuere urna. Phasellus
+            fermentum dolor nec sapien congue feugiat. Duis aliquam, ex finibus porttitor viverra,
+            quam augue gravida dui, quis cursus purus justo a mi.
+        <span class="pl-kos">&lt;/</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-ent">div</span><span class="pl-kos">&gt;</span>
+    <span class="pl-kos">&lt;</span><span class="pl-ent">script</span> <span class="pl-c1">type</span>="<span class="pl-s">module</span>"<span class="pl-kos">&gt;</span>
+        <span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-v">TextNodesFromDOM</span><span class="pl-kos">,</span> <span class="pl-v">Match</span><span class="pl-kos">,</span> <span class="pl-s1">annotateDOM</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'https://cdn.skypack.dev/@fairfox/adorn?min'</span><span class="pl-kos">;</span>
+
+        <span class="pl-k">const</span> <span class="pl-s1">insensitive</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">Map</span><span class="pl-kos">(</span><span class="pl-kos">[</span>
+            <span class="pl-kos">[</span><span class="pl-s">'123'</span><span class="pl-kos">,</span> <span class="pl-kos">[</span><span class="pl-s">'Ipsum'</span><span class="pl-kos">]</span><span class="pl-kos">]</span><span class="pl-kos">,</span>
+            <span class="pl-kos">[</span><span class="pl-s">'456'</span><span class="pl-kos">,</span> <span class="pl-kos">[</span><span class="pl-s">'neque'</span><span class="pl-kos">]</span><span class="pl-kos">]</span><span class="pl-kos">,</span>
+            <span class="pl-kos">[</span><span class="pl-s">'789'</span><span class="pl-kos">,</span> <span class="pl-kos">[</span><span class="pl-s">'Ut'</span><span class="pl-kos">]</span><span class="pl-kos">]</span>
+        <span class="pl-kos">]</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-k">const</span> <span class="pl-s1">sensitive</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">Map</span><span class="pl-kos">(</span><span class="pl-kos">[</span><span class="pl-kos">[</span><span class="pl-s">'321'</span><span class="pl-kos">,</span> <span class="pl-kos">[</span><span class="pl-s">'Nullam'</span><span class="pl-kos">]</span><span class="pl-kos">]</span><span class="pl-kos">]</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-k">const</span> <span class="pl-s1">opts</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span> <span class="pl-c1">tag</span>: <span class="pl-s">'x-annotate'</span> <span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+        <span class="pl-k">const</span> <span class="pl-s1">match</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">Match</span><span class="pl-kos">(</span><span class="pl-s1">insensitive</span><span class="pl-kos">,</span> <span class="pl-s1">sensitive</span><span class="pl-kos">,</span> <span class="pl-s1">opts</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-k">const</span> <span class="pl-s1">textNodesFromDOM</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">TextNodesFromDOM</span><span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">body</span><span class="pl-kos">,</span> <span class="pl-kos">[</span><span class="pl-s1">opts</span><span class="pl-kos">.</span><span class="pl-c1">tag</span><span class="pl-kos">.</span><span class="pl-en">toUpperCase</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">]</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+        <span class="pl-en">annotateDOM</span><span class="pl-kos">(</span><span class="pl-s1">textNodesFromDOM</span><span class="pl-kos">.</span><span class="pl-en">walk</span><span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">body</span><span class="pl-kos">)</span><span class="pl-kos">,</span> <span class="pl-s1">match</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-s1">textNodesFromDOM</span><span class="pl-kos">.</span><span class="pl-en">watchDOM</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">ns</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-en">annotateDOM</span><span class="pl-kos">(</span><span class="pl-s1">ns</span><span class="pl-kos">,</span> <span class="pl-s1">match</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-s1">textNodesFromDOM</span><span class="pl-kos">.</span><span class="pl-en">watchScroll</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">ns</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-en">annotateDOM</span><span class="pl-kos">(</span><span class="pl-s1">ns</span><span class="pl-kos">,</span> <span class="pl-s1">match</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-ent">script</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">body</span><span class="pl-kos">&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-ent">html</span><span class="pl-kos">&gt;</span></pre></div>
+
+<h4 id="simple-usage-in-react">Simple usage in React</h4>
+<pre><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-c1">FC</span><span class="pl-kos">,</span> <span class="pl-s1">useEffect</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'react'</span><span class="pl-kos">;</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-v">TextNodesFromDOM</span><span class="pl-kos">,</span> <span class="pl-v">Match</span><span class="pl-kos">,</span> <span class="pl-s1">annotateDOM</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'@fairfox/adorn'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">insensitive</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">Map</span><span class="pl-kos">(</span><span class="pl-kos">[</span>
+    <span class="pl-kos">[</span><span class="pl-s">'123'</span><span class="pl-kos">,</span> <span class="pl-kos">[</span><span class="pl-s">'Ipsum'</span><span class="pl-kos">]</span><span class="pl-kos">]</span><span class="pl-kos">,</span>
+    <span class="pl-kos">[</span><span class="pl-s">'456'</span><span class="pl-kos">,</span> <span class="pl-kos">[</span><span class="pl-s">'neque'</span><span class="pl-kos">]</span><span class="pl-kos">]</span><span class="pl-kos">,</span>
+    <span class="pl-kos">[</span><span class="pl-s">'789'</span><span class="pl-kos">,</span> <span class="pl-kos">[</span><span class="pl-s">'Ut'</span><span class="pl-kos">]</span><span class="pl-kos">]</span>
+<span class="pl-kos">]</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-k">const</span> <span class="pl-s1">sensitive</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">Map</span><span class="pl-kos">(</span><span class="pl-kos">[</span><span class="pl-kos">[</span><span class="pl-s">'321'</span><span class="pl-kos">,</span> <span class="pl-kos">[</span><span class="pl-s">'Nullam'</span><span class="pl-kos">]</span><span class="pl-kos">]</span><span class="pl-kos">]</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-k">const</span> <span class="pl-s1">opts</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span> <span class="pl-c1">tag</span>: <span class="pl-s">'x-annotate'</span> <span class="pl-kos">}</span><span class="pl-kos">;</span>
+<span class="pl-k">const</span> <span class="pl-s1">match</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">Match</span><span class="pl-kos">(</span><span class="pl-s1">ipsumCaseInsensitive</span><span class="pl-kos">,</span> <span class="pl-s1">ipsumCaseSensitive</span><span class="pl-kos">,</span> <span class="pl-s1">opts</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-k">const</span> <span class="pl-s1">textNodesFromDOM</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">TextNodesFromDOM</span><span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">body</span><span class="pl-kos">,</span> <span class="pl-kos">[</span><span class="pl-s1">opts</span><span class="pl-kos">.</span><span class="pl-c1">tag</span><span class="pl-kos">.</span><span class="pl-en">toUpperCase</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">]</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-v">Ipsum</span>: <span class="pl-c1">FC</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-en">useEffect</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+        <span class="pl-en">annotateDOM</span><span class="pl-kos">(</span><span class="pl-s1">textNodesFromDOM</span><span class="pl-kos">.</span><span class="pl-en">walk</span><span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">body</span><span class="pl-kos">)</span><span class="pl-kos">,</span> <span class="pl-s1">match</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-k">const</span> <span class="pl-s1">scrollCB</span> <span class="pl-c1">=</span> <span class="pl-s1">textNodesFromDOM</span><span class="pl-kos">.</span><span class="pl-en">watchScroll</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">ns</span>: <span class="pl-v">Node</span><span class="pl-kos">[</span><span class="pl-s1"></span><span class="pl-kos">]</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">annotateDOM</span><span class="pl-kos">(</span><span class="pl-s1">ns</span><span class="pl-kos">,</span> <span class="pl-s1">match</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-k">return</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">textNodesFromDOM</span><span class="pl-kos">.</span><span class="pl-en">endWatchScroll</span><span class="pl-kos">(</span><span class="pl-s1">scrollCB</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span><span class="pl-kos">,</span> <span class="pl-kos">[</span><span class="pl-kos">]</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-k">return</span> <span class="pl-kos">(</span>
+        <span class="pl-c1">&lt;</span><span class="pl-ent">div</span> <span class="pl-c1">className</span><span class="pl-c1">=</span><span class="pl-s">"content"</span><span class="pl-c1">&gt;</span>
+            <span class="pl-c1">&lt;</span><span class="pl-ent">p</span><span class="pl-c1">&gt;</span>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. In cursus cursus enim eu
+                scelerisque. Nam eleifend purus sed quam facilisis aliquet. Fusce feugiat neque elit, non
+                egestas ipsum molestie quis. Suspendisse quis ipsum malesuada, scelerisque tellus quis,
+                auctor tortor. Nam gravida dolor at molestie facilisis. Donec faucibus nisl vitae ante
+                accumsan, id vulputate lorem convallis. Integer condimentum nunc turpis, eget pellentesque
+                nunc gravida nec. Maecenas in tincidunt eros. Nullam ac feugiat turpis. Interdum et
+                malesuada fames ac ante ipsum primis in faucibus. Nullam at posuere urna. Phasellus
+                fermentum dolor nec sapien congue feugiat. Duis aliquam, ex finibus porttitor viverra,
+                quam augue gravida dui, quis cursus purus justo a mi.
+            <span class="pl-c1">&lt;</span><span class="pl-c1">/</span><span class="pl-ent">p</span><span class="pl-c1">&gt;</span>
+        <span class="pl-c1">&lt;</span><span class="pl-c1">/</span><span class="pl-ent">div</span><span class="pl-c1">&gt;</span>
+    <span class="pl-kos">)</span>
+<span class="pl-kos">}</span></pre>
+
+
+</body>
+</html>
