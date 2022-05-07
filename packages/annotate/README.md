@@ -4,9 +4,7 @@
 
 ### Background and Inspiration
 
-I believe that there is a use-case for keyword matching in large amounts of text (with large numbers of keywords) in Javascript-friendly environments. I believe there is a further use-case for wrapping such matches in xml; to be used to add highlighting, tooltips or any other interactivity to keyword text in websites.
-
-I felt that the current possibilities available to achieve this were lacking, so created this library.
+Want keyword matching for large amounts of text (with large numbers of keywords) in Javascript-friendly environments? Want to leverage knowledge resources to enrich a website's content without the overhead of curating and maintaining the extra content? Want to add interactive elements (whether simply styling, links, or tooltips or something more complex) based on a user's profile or settings? Adorn your content nimbly, but with power and precision.
 
 ### Performance
 
@@ -26,7 +24,11 @@ You can optionally listen for DOM mutations and scrolling.
 
 One possible disadvantage of this algorithm is that it does not match substrings and returns the longest match only (if you want to do that then aho-corasick is probably a better choice for you).
 
-### Usage in static HTML
+
+### Some examples
+While the below examples showcase htmlWrapping via annotateDOM with a [custom element](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements), there is no reason not to take a simpler approach and add a class, or inline styles, or even an anchor link with an href calculated from the matched keyword.
+
+#### Usage in static HTML as a Javascript plugin
 
 ```html
 <html lang="en">
@@ -65,7 +67,7 @@ One possible disadvantage of this algorithm is that it does not match substrings
 				['789', ['Ut']]
 			]);
 			const sensitive = new Map([['321', ['Nullam']]]);
-			const opts = { tag: 'x-annotate' };
+			const opts = { tag: 'x-annotate', getAttrs: (id: string) => `data-match-id="${id}"`};
 
 			const match = new Match(insensitive, sensitive, opts);
 			const textNodesFromDOM = new TextNodesFromDOM(document.body, [opts.tag.toUpperCase()]);
@@ -78,7 +80,7 @@ One possible disadvantage of this algorithm is that it does not match substrings
 </html>
 ```
 
-### Usage in React
+#### Simple usage in React
 
 ```javascript
 import { FC, useEffect } from 'react';
@@ -90,7 +92,7 @@ const insensitive = new Map([
 	['789', ['Ut']]
 ]);
 const sensitive = new Map([['321', ['Nullam']]]);
-const opts = { tag: 'x-annotate' };
+const opts = { tag: 'x-annotate', getAttrs: (id: string) => `data-match-id="${id}"`};
 const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, opts);
 const textNodesFromDOM = new TextNodesFromDOM(document.body, [opts.tag.toUpperCase()]);
 

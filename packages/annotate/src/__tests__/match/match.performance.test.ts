@@ -3,8 +3,10 @@ import { Match } from '../../';
 import { performance, PerformanceObserver } from 'perf_hooks';
 import { ipsumCaseSensitive, ipsumCaseInsensitive, ipsumText } from '@fairfox/test-utils';
 
-const opts = { tag: 'x-a' };
-const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, opts);
+const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
+	tag: 'x-a',
+	getAttrs: (id: string) => `data-match-id="${id}"`
+});
 
 describe('annotate with', () => {
 	it('extractMatchIds correctly and in less than 3ms', () => {

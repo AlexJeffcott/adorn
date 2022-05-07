@@ -286,7 +286,7 @@
 			['4', ['pain', 'dolori']]
 		]);
 		const ipsumCS = new Map([['5', ['Aristonem']], ['6', ['Chryippo']], ['7', ['Socratica']], ['8', ['Platonis']]]);
-		const opts = { tag: 'x-annotate' };
+		const opts = { tag: 'x-annotate', getAttrs: (id) => `data-match-id="${id}"` };
 		const match = new Match(ipsumCI, ipsumCS, opts);
 		const textNodesFromDOM = new TextNodesFromDOM(document.body, [opts.tag.toUpperCase()]);
 

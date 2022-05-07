@@ -5,7 +5,10 @@ describe('match should', () => {
 	const ci = new Map([['2', ['a']]]);
 	const cs = new Map([['5', ['Aristonem']]]);
 
-	const match = new Match(new Map(ci), new Map(cs), { tag: 'x-a' });
+	const match = new Match(new Map(ci), new Map(cs), {
+		tag: 'x-a',
+		getAttrs: (id: string) => `data-match-id="${id}"`
+	});
 	const matches = [['5', 0, 8]];
 
 	const str = 'Aristonem but not aristonem';

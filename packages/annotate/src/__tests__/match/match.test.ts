@@ -25,7 +25,10 @@ describe('match should', () => {
 		it('with correct stringified repressentation', () => {
 			const ipsumCaseInsensitive = new Map([['ci', ['abc', 'def', 'ghi jkl', 'mnop-qr2']]]);
 			const ipsumCaseSensitive = new Map([['cs', ['ZXY', 'VUT']]]);
-			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, { tag: 'x-a' });
+			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
+				tag: 'x-a',
+				getAttrs: (id: string) => `data-match-id="${id}"`
+			});
 			const { trieAsString } = match.getDetails();
 			expect(trieAsString).to.equal(
 				'CI ===> [["a",[["b",[["c",[["_kw_","ci"]]],["C",[["_kw_","ci"]]]]],["B",[["c",[["_kw_","ci"]]],["C",[["_kw_","ci"]]]]]]],["A",[["b",[["c",[["_kw_","ci"]]],["C",[["_kw_","ci"]]]]],["B",[["c",[["_kw_","ci"]]],["C",[["_kw_","ci"]]]]]]],["d",[["e",[["f",[["_kw_","ci"]]],["F",[["_kw_","ci"]]]]],["E",[["f",[["_kw_","ci"]]],["F",[["_kw_","ci"]]]]]]],["D",[["e",[["f",[["_kw_","ci"]]],["F",[["_kw_","ci"]]]]],["E",[["f",[["_kw_","ci"]]],["F",[["_kw_","ci"]]]]]]],["g",[["h",[["i",[[" ",[["j",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]],["J",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]]]]]],["I",[[" ",[["j",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]],["J",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]]]]]]]],["H",[["i",[[" ",[["j",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]],["J",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]]]]]],["I",[[" ",[["j",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]],["J",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]]]]]]]]]],["G",[["h",[["i",[[" ",[["j",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]],["J",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]]]]]],["I",[[" ",[["j",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]],["J",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]]]]]]]],["H",[["i",[[" ",[["j",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]],["J",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]]]]]],["I",[[" ",[["j",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]],["J",[["k",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]],["K",[["l",[["_kw_","ci"]]],["L",[["_kw_","ci"]]]]]]]]]]]]]]],["m",[["n",[["o",[["p",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]],["P",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]]]],["O",[["p",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]],["P",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]]]]]],["N",[["o",[["p",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]],["P",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]]]],["O",[["p",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]],["P",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]]]]]]]],["M",[["n",[["o",[["p",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]],["P",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]]]],["O",[["p",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]],["P",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]]]]]],["N",[["o",[["p",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]],["P",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]]]],["O",[["p",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]],["P",[["-",[["q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]],["Q",[["r",[["2",[["_kw_","ci"]]]]],["R",[["2",[["_kw_","ci"]]]]]]]]]]]]]]]]]] || CS ===> [["Z",[["X",[["Y",[["_kw_","cs"]]]]]]],["V",[["U",[["T",[["_kw_","cs"]]]]]]]]'
@@ -34,26 +37,42 @@ describe('match should', () => {
 
 		it('with error when has duplicate CI kws', () => {
 			const ipsumCaseInsensitive = new Map([['ci', ['abc', 'abc']]]);
-			const iThrowError = () => new Match(ipsumCaseInsensitive, null, { tag: 'x-a' });
+			const iThrowError = () =>
+				new Match(ipsumCaseInsensitive, null, {
+					tag: 'x-a',
+					getAttrs: (id: string) => `data-match-id="${id}"`
+				});
 			expect(iThrowError).to.throw(Error, 'lower-cased case-insensitive map contains duplicates');
 		});
 
 		it('with error when has duplicate CS kws', () => {
 			const ipsumCaseSensitive = new Map([['cs', ['abc', 'abc']]]);
-			const iThrowError = () => new Match(null, ipsumCaseSensitive, { tag: 'x-a' });
+			const iThrowError = () =>
+				new Match(null, ipsumCaseSensitive, {
+					tag: 'x-a',
+					getAttrs: (id: string) => `data-match-id="${id}"`
+				});
 			expect(iThrowError).to.throw(Error, 'case-sensitive map contains duplicates');
 		});
 
 		it('without error when has duplicate lowercase CS kws', () => {
 			const ipsumCaseSensitive = new Map([['cs', ['abc', 'aBc']]]);
-			const iThrowError = () => new Match(null, ipsumCaseSensitive, { tag: 'x-a' });
+			const iThrowError = () =>
+				new Match(null, ipsumCaseSensitive, {
+					tag: 'x-a',
+					getAttrs: (id: string) => `data-match-id="${id}"`
+				});
 			expect(iThrowError).not.to.throw(Error);
 		});
 
 		it('with error when has clash between CI and CS kws', () => {
 			const ipsumCaseInsensitive = new Map([['ci', ['ABC']]]);
 			const ipsumCaseSensitive = new Map([['cs', ['abc', 'aBc']]]);
-			const iThrowError = () => new Match(ipsumCaseInsensitive, ipsumCaseSensitive, { tag: 'x-a' });
+			const iThrowError = () =>
+				new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
+					tag: 'x-a',
+					getAttrs: (id: string) => `data-match-id="${id}"`
+				});
 			expect(iThrowError).to.throw(
 				Error,
 				'merged lower-cased case-insensitive list and deduped lower-cased case-sensitive map contains duplicates'
@@ -67,7 +86,10 @@ describe('match should', () => {
 				'abc Here is a text for testing abc purposes ABC with some matches def here and DEF there VUT.mnop-qr2';
 			const ipsumCaseInsensitive = new Map([['ci', ['abc', 'def', 'ghi jkl', 'mnop-qr2']]]);
 			const ipsumCaseSensitive = new Map([['cs', ['ZXY', 'VUT']]]);
-			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, { tag: 'x-a' });
+			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
+				tag: 'x-a',
+				getAttrs: (id: string) => `data-match-id="${id}"`
+			});
 
 			const res = match.getMatchIndexes(text);
 			expect(JSON.stringify(res)).to.equal(
@@ -87,7 +109,10 @@ describe('match should', () => {
 				'abc Here is a text for testing abc purposes ABC with some matches def here and DEF there VUT.mnop-qr2 ';
 			const ipsumCaseInsensitive = new Map([['ci', ['abc', 'def', 'ghi jkl', 'mnop-qr2']]]);
 			const ipsumCaseSensitive = new Map([['cs', ['ZXY', 'VUT']]]);
-			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, { tag: 'x-a' });
+			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
+				tag: 'x-a',
+				getAttrs: (id: string) => `data-match-id="${id}"`
+			});
 
 			const res = match.getMatchIndexes(text);
 			expect(JSON.stringify(res)).to.equal(
@@ -107,7 +132,10 @@ describe('match should', () => {
 				'abc Here is a text for testing abc purposes ABC with some matches def here and DEF there VUT. qabc';
 			const ipsumCaseInsensitive = new Map([['ci', ['abc']]]);
 			const ipsumCaseSensitive = null;
-			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, { tag: 'x-a' });
+			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
+				tag: 'x-a',
+				getAttrs: (id: string) => `data-match-id="${id}"`
+			});
 
 			const res = match.getMatchIndexes(text);
 			expect(JSON.stringify(res)).to.equal(
@@ -124,7 +152,10 @@ describe('match should', () => {
 				['short', ['abc']],
 				['long', ['abcd']]
 			]);
-			const match = new Match(ipsumCaseInsensitive, null, { tag: 'x-a' });
+			const match = new Match(ipsumCaseInsensitive, null, {
+				tag: 'x-a',
+				getAttrs: (id: string) => `data-match-id="${id}"`
+			});
 
 			const res = match.getMatchIndexes(text);
 			expect(JSON.stringify(res)).to.equal(
@@ -147,7 +178,10 @@ describe('match should', () => {
 				['ci-0', ['VakgUb ']],
 				['ci-1', ['0tsNyfd2']]
 			];
-			const match = new Match(new Map(ci), new Map(cs), { tag: 'x-a' });
+			const match = new Match(new Map(ci), new Map(cs), {
+				tag: 'x-a',
+				getAttrs: (id: string) => `data-match-id="${id}"`
+			});
 			const strOfRnd =
 				'QPT13rJz Auyo RIoVPLq9eSVO xMwad 3-qoli YJrJVuyDR 0tsNyfd2 xmwad JsFcwSeS8DZ pklv PckJ vakgub  qAuyo';
 			const replacedHtml =
@@ -160,7 +194,10 @@ describe('match should', () => {
 		it('wrapKwsWithHtml correctly again', () => {
 			const cs: Array<[string, string[]]> = [['cs-0', ['Auyo']]];
 			const ci = null;
-			const match = new Match(new Map(ci), new Map(cs), { tag: 'x-a' });
+			const match = new Match(new Map(ci), new Map(cs), {
+				tag: 'x-a',
+				getAttrs: (id: string) => `data-match-id="${id}"`
+			});
 			const strOfRnd =
 				'QPT13rJz Auyo RIoVPLq9eSVO xMwad 3-qoli YJrJVuyDR 0tsNyfd2 xmwad JsFcwSeS8DZ pklv PckJ vakgub Auyoq';
 			const replacedHtml =
@@ -196,7 +233,10 @@ describe('match should', () => {
 			['ci-8', ['QhoD3lvS']],
 			['ci-9', ['S7zCaau-ud ueT']]
 		];
-		const match = new Match(new Map(ci), new Map(cs), { tag: 'x-a' });
+		const match = new Match(new Map(ci), new Map(cs), {
+			tag: 'x-a',
+			getAttrs: (id: string) => `data-match-id="${id}"`
+		});
 		const matches = [
 			['ci-0', 67, 73],
 			['ci-8', 92, 99],
