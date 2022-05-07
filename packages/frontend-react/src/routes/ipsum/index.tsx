@@ -3,7 +3,7 @@ import { TextNodesFromDOM, Match, annotateDOM } from '@fairfox/adorn';
 import { ipsumCaseSensitive, ipsumCaseInsensitive } from '@fairfox/test-utils';
 import './index.css';
 
-const opts = { tag: 'x-annotate' };
+const opts = { tag: 'x-annotate', getAttrs: (id: string) => `data-match-id="${id}"` };
 const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, opts);
 const textNodesFromDOM = new TextNodesFromDOM(document.body, [opts.tag.toUpperCase()]);
 

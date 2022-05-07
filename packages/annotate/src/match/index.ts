@@ -2,7 +2,7 @@ import { getMapAsString, getNonWordBoundaries } from './utils';
 
 type Trie = Map<string | '_kw_', Trie | string>;
 type KwList = Map<string, string[]>;
-type Opts = { tag: string };
+type Opts = { tag: string; getAttrs: (id: string) => string };
 
 export class Match {
 	private readonly _kw: '_kw_';
@@ -194,7 +194,9 @@ export class Match {
 		matches.forEach((match) => {
 			newSentence = `${newSentence}${sentence.slice(lastMatchEndIndex, match[1])}<${
 				this.opts.tag
-			} data-match-id="${match[0]}">${sentence.slice(match[1], match[2] + 1)}</${this.opts.tag}>`;
+			} ${this.opts.getAttrs(match[0])}>${sentence.slice(match[1], match[2] + 1)}</${
+				this.opts.tag
+			}>`;
 			lastMatchEndIndex = match[2] + 1;
 		});
 		return newSentence + sentence.slice(lastMatchEndIndex);
