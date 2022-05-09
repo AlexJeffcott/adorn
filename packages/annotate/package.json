@@ -9,7 +9,7 @@
 		"keyword-extraction",
 		"search-in-text"
 	],
-	"version": "1.0.19",
+	"version": "1.0.20",
 	"exports": {
 		".": {
 			"import": "./build/index.js"
@@ -26,7 +26,8 @@
 		"url": "git+https://github.com/AlexJeffcott/adorn.git"
 	},
 	"files": [
-		"build/*", "build/**/*"
+		"build/*",
+		"build/**/*"
 	],
 	"main": "build/index.js",
 	"types": "build/index.d.ts",
