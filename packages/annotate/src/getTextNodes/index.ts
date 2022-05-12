@@ -1,6 +1,7 @@
 import throttle from 'lodash.throttle';
 
 const relDiff = (a: number, b: number): number => 100 * Math.abs((a - b) / ((a + b) / 2));
+
 export class TextNodesFromDOM {
 	private baseElement: HTMLElement | Node;
 	private range: Range;

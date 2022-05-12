@@ -24,8 +24,8 @@ You can optionally listen for DOM mutations and scrolling.
 
 One possible disadvantage of this algorithm is that it does not match substrings and returns the longest match only (if you want to do that then aho-corasick is probably a better choice for you).
 
-
 ### Some examples
+
 While the below examples showcase htmlWrapping via annotateDOM with a [custom element](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements), there is no reason not to take a simpler approach and add a class, or inline styles, or even an anchor link with an href calculated from the matched keyword.
 
 #### Usage in static HTML as a Javascript plugin
@@ -67,7 +67,7 @@ While the below examples showcase htmlWrapping via annotateDOM with a [custom el
 				['789', ['Ut']]
 			]);
 			const sensitive = new Map([['321', ['Nullam']]]);
-			const opts = { tag: 'x-annotate', getAttrs: (id: string) => `data-match-id="${id}"`};
+			const opts = { tag: 'x-annotate', getAttrs: (id: string) => `data-match-id="${id}"` };
 
 			const match = new Match(insensitive, sensitive, opts);
 			const textNodesFromDOM = new TextNodesFromDOM(document.body, [opts.tag.toUpperCase()]);
@@ -92,7 +92,7 @@ const insensitive = new Map([
 	['789', ['Ut']]
 ]);
 const sensitive = new Map([['321', ['Nullam']]]);
-const opts = { tag: 'x-annotate', getAttrs: (id: string) => `data-match-id="${id}"`};
+const opts = { tag: 'x-annotate', getAttrs: (id: string) => `data-match-id="${id}"` };
 const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, opts);
 const textNodesFromDOM = new TextNodesFromDOM(document.body, [opts.tag.toUpperCase()]);
 

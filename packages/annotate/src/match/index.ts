@@ -1,24 +1,24 @@
-import { getMapAsString, getNonWordBoundaries } from './utils';
+import { getMapAsString, dedupList, diffLists, getSkipChars, getWordChars } from './utils';
 
 type Trie = Map<string | '_kw_', Trie | string>;
-type KwList = Map<string, string[]>;
+type KwListMap = Map<string, string[]>;
 type Opts = { tag: string; getAttrs: (id: string) => string };
 
 export class Match {
 	private readonly _kw: '_kw_';
-	private nonWordBoundaries: Set<string>;
+	private wordChars: Set<string>;
+	private skipChars: Set<string>;
 	private readonly trieCI: Trie;
 	private readonly trieCS: Trie;
 	private readonly opts: Opts;
 
-	constructor(insensitive: KwList | null, sensitive: KwList | null, opts: Opts) {
+	constructor(insensitive: KwListMap | null, sensitive: KwListMap | null, opts: Opts) {
 		this._kw = '_kw_';
-
-		this.nonWordBoundaries = getNonWordBoundaries();
-
+		this.wordChars = getWordChars();
+		this.skipChars = getSkipChars();
 		this.trieCI = new Map();
 		this.trieCS = new Map();
-		this.areKWListsValid(insensitive, sensitive);
+		this.areKwListMapsValid(insensitive, sensitive);
 		this.addKws(insensitive, false);
 		this.addKws(sensitive, true);
 		this.opts = opts;
@@ -57,39 +57,51 @@ export class Match {
 		currentTrie.set(this._kw, id);
 	}
 
-	areKWListsValid(insensitive: KwList | null, sensitive: KwList | null): boolean {
+	areKwListMapsValid = (insensitive: KwListMap | null, sensitive: KwListMap | null) => {
 		if (insensitive === null && sensitive === null)
 			throw new Error('please provide a case-sensitive and/or case-insensitive kw map');
-
-		const dedup = (list: string[]) => Array.from(new Set(list));
 
 		const cs: string[] = [];
 		if (sensitive !== null) sensitive.forEach((strList) => strList.forEach((s) => cs.push(s)));
 		// check for duplicates in cs as there should be none
 		// duplicates in lowerCaseCs CAN exist (checking for ['AbcD', 'abCD'] but not ['abcd'])
-		if (dedup(cs).length !== cs.length) throw new Error('case-sensitive map contains duplicates');
+		const dedupedCS = dedupList(cs);
+		if (dedupedCS.length !== cs.length) {
+			throw new Error(
+				`case-sensitive map contains duplicates => ${JSON.stringify(diffLists(dedupedCS, cs))}`
+			);
+		}
 
 		const lowercaseCi: string[] = [];
 		if (insensitive !== null)
 			insensitive.forEach((strList) => strList.forEach((s) => lowercaseCi.push(s.toLowerCase())));
 		// check for duplicates in lowercaseCi as there should be none
-		if (dedup(lowercaseCi).length !== lowercaseCi.length)
-			throw new Error('lower-cased case-insensitive map contains duplicates');
-
-		const lowercaseCs: string[] = cs.map((s) => s.toLowerCase());
-		const mergedLists = [...dedup(lowercaseCs), ...lowercaseCi];
-		// check for duplicates in merged lowercaseCi and dedupedLowercaseCs as there should be none
-		if (dedup(mergedLists).length !== mergedLists.length)
+		const dedupedLowercaseCi = dedupList(lowercaseCi);
+		if (dedupedLowercaseCi.length !== lowercaseCi.length) {
 			throw new Error(
-				'merged lower-cased case-insensitive list and deduped lower-cased case-sensitive map contains duplicates'
+				`lower-cased case-insensitive map contains duplicates => ${JSON.stringify(
+					diffLists(dedupedLowercaseCi, lowercaseCi)
+				)}`
 			);
+		}
 
+		const lowercaseCs = cs.map((s) => s.toLowerCase());
+		const mergedLists = [...dedupList(lowercaseCs), ...lowercaseCi];
+		// check for duplicates in merged lowercaseCi and dedupedLowercaseCs as there should be none
+		const dedupedMergedLists = dedupList(mergedLists);
+		if (dedupedMergedLists.length !== mergedLists.length) {
+			throw new Error(
+				`merged lower-cased case-insensitive list and deduped lower-cased case-sensitive map contains duplicates => ${JSON.stringify(
+					diffLists(dedupedMergedLists, mergedLists)
+				)}`
+			);
+		}
 		return true;
-	}
+	};
 
-	addKws(kwList: KwList | null, caseSensitive: boolean) {
-		if (kwList === null) return;
-		kwList.forEach((kws, id) => {
+	addKws(KwListMap: KwListMap | null, caseSensitive: boolean) {
+		if (KwListMap === null) return;
+		KwListMap.forEach((kws, id) => {
 			kws.forEach((kw) => this.addKw(id, kw, caseSensitive));
 		});
 	}
@@ -97,64 +109,45 @@ export class Match {
 	getMatchIndexes(sentence: string) {
 		const idsWithIndexes: Array<[string, number, number]> = [];
 		const len = sentence.length;
-		let currentTrie = null as unknown as Trie;
-		let matchStart: null | number = null;
-		let matchEnd: null | number = null;
-		let foundId = '';
-		let hasChar = false;
 
-		const pass = (caseSensitive: boolean) => {
-			currentTrie = caseSensitive ? this.trieCS : this.trieCI;
-			matchStart = null;
-			matchEnd = null;
-			foundId = '';
-			hasChar = false;
+		const parse = (caseSensitive: boolean) => {
+			let currentTrie = caseSensitive ? this.trieCS : this.trieCI;
+			let found: [string, number, number] = ['', -1, -1];
+			let hasChar = false;
 
 			for (let i = 0; i <= len; i++) {
-				if (len === i && foundId) {
-					// if you reach the end of the sentence, and you have a foundId then push it to the list and break.
-					// this is to catch matches that terminate a sentence like where 'match' is found 'at the end of the phrase match'
-					if (matchStart === null) throw new Error('!!!matchStart is null in getMatchIndexes!!!');
-					matchEnd = i - 1;
-					idsWithIndexes.push([foundId, matchStart, matchEnd]);
-					break;
-				}
-
-				const previousCharIsNonWordBoundary =
-					i === 0 ? true : !this.nonWordBoundaries.has(sentence[i - 1]);
-
 				const char = sentence[i];
-
-				const charIsNonWordBoundary = !this.nonWordBoundaries.has(char);
+				const prevChar = sentence[i - 1];
+				const charIsNotAWordChar = !this.wordChars.has(char);
+				const prevCharIsNotAWordChar = !this.wordChars.has(prevChar);
 
 				hasChar = currentTrie.has(char);
 
-				if (hasChar && matchStart === null && previousCharIsNonWordBoundary) {
-					matchStart = i;
+				if (this.skipChars.has(char)) continue;
+
+				if (!hasChar) {
+					// if the current char in the sentence does not have an entry in the currentTrie
+					if (found[0] && found[1] >= 0 && found[2] >= 0 && charIsNotAWordChar) {
+						idsWithIndexes.push(found);
+					}
+
+					currentTrie = caseSensitive ? this.trieCS : this.trieCI;
+					found = ['', -1, -1];
+					if (currentTrie.has(char)) i = i - 1;
+					continue;
 				}
 
-				if (matchStart === null) continue;
+				if (found[1] < 0 && prevCharIsNotAWordChar) found[1] = i;
 
-				if (hasChar) currentTrie = currentTrie.get(char) as Trie;
-
-				foundId = currentTrie.has(this._kw) ? (currentTrie.get(this._kw) as string) : '';
-
-				// if the current char in the sentence does not have an entry in the currentTrie
-				if (!hasChar) {
-					if (foundId && charIsNonWordBoundary) {
-						matchEnd = i - 1;
-						idsWithIndexes.push([foundId, matchStart, matchEnd]);
-					}
-					currentTrie = caseSensitive ? this.trieCS : this.trieCI;
-					foundId = '';
-					matchStart = null;
-					matchEnd = null;
+				currentTrie = currentTrie.get(char) as Trie;
+				if (currentTrie.has(this._kw)) {
+					found = [currentTrie.get(this._kw) as string, found[1], i];
 				}
 			}
 		};
 
-		if (this.trieCI !== null) pass(false);
-		if (this.trieCS !== null) pass(true);
+		if (this.trieCI !== null) parse(false);
+		if (this.trieCS !== null) parse(true);
 
 		return idsWithIndexes.sort((a, b) => a[1] - b[1]);
 	}
