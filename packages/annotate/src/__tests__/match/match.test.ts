@@ -22,7 +22,7 @@ describe('match should', () => {
 			});
 		});
 
-		it('with correct stringified repressentation', () => {
+		it('with correct stringified representation', () => {
 			const ipsumCaseInsensitive = new Map([['ci', ['abc', 'def', 'ghi jkl', 'mnop-qr2']]]);
 			const ipsumCaseSensitive = new Map([['cs', ['ZXY', 'VUT']]]);
 			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
@@ -75,7 +75,7 @@ describe('match should', () => {
 				});
 			expect(iThrowError).to.throw(
 				Error,
-				'merged lower-cased case-insensitive list and deduped lower-cased case-sensitive map contains duplicates'
+				'merged lower-cased case-insensitive list and deduped lower-cased case-sensitive map contains duplicates => ["abc"]'
 			);
 		});
 	});
@@ -84,7 +84,9 @@ describe('match should', () => {
 		it('when string terminates on match', () => {
 			const text =
 				'abc Here is a text for testing abc purposes ABC with some matches def here and DEF there VUT.mnop-qr2';
-			const ipsumCaseInsensitive = new Map([['ci', ['abc', 'def', 'ghi jkl', 'mnop-qr2']]]);
+			const ipsumCaseInsensitive = new Map([
+				['ci', ['abc', 'def', 'ghi jkl', 'mnop-qr2', 'mnop-qr2 hello']]
+			]);
 			const ipsumCaseSensitive = new Map([['cs', ['ZXY', 'VUT']]]);
 			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
 				tag: 'x-a',
@@ -104,10 +106,12 @@ describe('match should', () => {
 				])
 			);
 		});
-		it('when string does not terminates on match', () => {
+		it('when string does not terminate on match', () => {
 			const text =
-				'abc Here is a text for testing abc purposes ABC with some matches def here and DEF there VUT.mnop-qr2 ';
-			const ipsumCaseInsensitive = new Map([['ci', ['abc', 'def', 'ghi jkl', 'mnop-qr2']]]);
+				'abc Here is a text for testing abc purposes ABC with some matches def here and DEF there VUT.mnop-qr2 he';
+			const ipsumCaseInsensitive = new Map([
+				['ci', ['abc', 'def', 'ghi jkl', 'mnop-qr2', 'mnop-qr2 hello']]
+			]);
 			const ipsumCaseSensitive = new Map([['cs', ['ZXY', 'VUT']]]);
 			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
 				tag: 'x-a',
@@ -127,9 +131,8 @@ describe('match should', () => {
 				])
 			);
 		});
-		it('when string does not terminates on semi match', () => {
-			const text =
-				'abc Here is a text for testing abc purposes ABC with some matches def here and DEF there VUT. qabc';
+		it('when string does not terminate on semi match', () => {
+			const text = 'abc xx abc xx ABC xx qabc';
 			const ipsumCaseInsensitive = new Map([['ci', ['abc']]]);
 			const ipsumCaseSensitive = null;
 			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
@@ -141,12 +144,12 @@ describe('match should', () => {
 			expect(JSON.stringify(res)).to.equal(
 				JSON.stringify([
 					['ci', 0, 2],
-					['ci', 31, 33],
-					['ci', 44, 46]
+					['ci', 7, 9],
+					['ci', 14, 16]
 				])
 			);
 		});
-		it('with confounders', () => {
+		it('with short and long matches', () => {
 			const text = 'abcd abc abcd';
 			const ipsumCaseInsensitive = new Map([
 				['short', ['abc']],
@@ -165,6 +168,30 @@ describe('match should', () => {
 					['long', 9, 12]
 				])
 			);
+		});
+		it('with a space in a semi-match before a real match', () => {
+			const text = 'a def';
+			const ipsumCaseInsensitive = new Map([
+				['with-space', ['a bc']],
+				['following-with-space', ['def']]
+			]);
+			const match = new Match(ipsumCaseInsensitive, null, {
+				tag: 'a',
+				getAttrs: (id: string) => id
+			});
+
+			const res = match.getMatchIndexes(text);
+			expect(JSON.stringify(res)).to.equal(JSON.stringify([['following-with-space', 2, 4]]));
+		});
+		it('with skipChars', () => {
+			const text = 'abc \nabc';
+			const ipsumCaseInsensitive = new Map([['ci', ['abc', 'abc abc']]]);
+			const match = new Match(ipsumCaseInsensitive, null, {
+				tag: 'a',
+				getAttrs: (id: string) => id
+			});
+			const res = match.getMatchIndexes(text);
+			expect(JSON.stringify(res)).to.equal(JSON.stringify([['ci', 0, 7]]));
 		});
 	});
 

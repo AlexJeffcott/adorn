@@ -1,24 +1,24 @@
 import type { Match } from '../match';
 
-export const annotateDOM = (textNodes: Array<Node | HTMLElement>, match: Match) => {
-	const renderNode = document.createElement('span');
-	textNodes.forEach((n) => {
+const rangeWrap = (textNodes: Array<Node | HTMLElement>, match: Match) => {
+	const range = document.createRange();
+
+	const wrap = (n: Node) => {
 		const oldText = n.textContent || '';
-		const newHtml = match.wrapKwsWithHtml(oldText);
+		const matches = match.getMatchIndexes(oldText);
 
-		if (oldText === newHtml) return;
-		if (n.parentElement === null) return;
+		matches.reverse().forEach((m) => {
+			const newParent = document.createElement('annotation-anchor');
+			newParent.setAttribute('data-content-id', m[0]);
+			newParent.setAttribute('data-annotation-variant', 'underline');
+			range.setStart(n, m[1]);
+			range.setEnd(n, m[2] + 1);
+			range.surroundContents(newParent);
+		});
+	};
+	textNodes.forEach(wrap);
+};
 
-		if (n.nextSibling === null && n.previousSibling === null) {
-			// if the text node's parent only has one child, then it is safe to overwrite all the innerHTML
-			n.parentElement.innerHTML = newHtml;
-		} else {
-			renderNode.innerHTML = newHtml;
-			if ('replaceWith' in n) {
-				// todo: why has this error appeared from nowhere?
-				// @ts-ignore
-				n.replaceWith(...renderNode.childNodes);
-			}
-		}
-	});
+export const annotateDOM = (textNodes: Array<Node | HTMLElement>, match: Match) => {
+	rangeWrap(textNodes, match);
 };

@@ -40,6 +40,7 @@
 		"emit": "tsc -p tsconfig-notestfiles.json --declaration --emitDeclarationOnly --declarationMap --outDir build",
 		"build": "node .esbuildrc.js",
 		"test": "mocha-esbuild **/*.test.ts",
+		"testx": "mocha-esbuild --grep 'with a space in a semi-match before a real match' **/*.test.ts",
 		"eslint": "eslint --ignore-path .gitignore --ext .ts --fix .",
 		"types": "tsc --noEmit",
 		"prettier": "prettier --ignore-path .gitignore --write .",
