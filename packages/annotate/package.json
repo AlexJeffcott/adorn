@@ -9,7 +9,7 @@
 		"keyword-extraction",
 		"search-in-text"
 	],
-	"version": "1.0.20",
+	"version": "1.0.21",
 	"exports": {
 		".": {
 			"import": "./build/index.js"
