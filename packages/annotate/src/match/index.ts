@@ -2,7 +2,11 @@ import { getMapAsString, dedupList, diffLists, getSkipChars, getWordChars } from
 
 type Trie = Map<string | '_kw_', Trie | string>;
 type KwListMap = Map<string, string[]>;
-type Opts = { tag: string; getAttrs: (id: string) => string };
+type Opts = {
+	tag: string;
+	getAttrs: (id: string) => Array<[string, string]>;
+	shouldSkipChars?: boolean;
+};
 
 export class Match {
 	private readonly _kw: '_kw_';
@@ -10,7 +14,7 @@ export class Match {
 	private skipChars: Set<string>;
 	private readonly trieCI: Trie;
 	private readonly trieCS: Trie;
-	private readonly opts: Opts;
+	readonly opts: Opts;
 
 	constructor(insensitive: KwListMap | null, sensitive: KwListMap | null, opts: Opts) {
 		this._kw = '_kw_';
@@ -21,7 +25,14 @@ export class Match {
 		this.areKwListMapsValid(insensitive, sensitive);
 		this.addKws(insensitive, false);
 		this.addKws(sensitive, true);
-		this.opts = opts;
+		this.opts = {
+			// @ts-ignore
+			tag: 'span',
+			// @ts-ignore
+			getAttrs: (id) => [['data-match-id', id]],
+			shouldSkipChars: true,
+			...opts
+		};
 	}
 
 	getDetails() {
@@ -123,7 +134,7 @@ export class Match {
 
 				hasChar = currentTrie.has(char);
 
-				if (this.skipChars.has(char)) continue;
+				if (this.opts.shouldSkipChars && this.skipChars.has(char)) continue;
 
 				if (!hasChar) {
 					// if the current char in the sentence does not have an entry in the currentTrie
@@ -185,11 +196,13 @@ export class Match {
 		let newSentence = '';
 
 		matches.forEach((match) => {
+			const attrStr = this.opts
+				.getAttrs(match[0])
+				.reduce((acc, cur, i) => `${acc}${i > 0 ? ' ' : ''}${cur[0]}="${cur[1]}"`, '');
+
 			newSentence = `${newSentence}${sentence.slice(lastMatchEndIndex, match[1])}<${
 				this.opts.tag
-			} ${this.opts.getAttrs(match[0])}>${sentence.slice(match[1], match[2] + 1)}</${
-				this.opts.tag
-			}>`;
+			} ${attrStr}>${sentence.slice(match[1], match[2] + 1)}</${this.opts.tag}>`;
 			lastMatchEndIndex = match[2] + 1;
 		});
 		return newSentence + sentence.slice(lastMatchEndIndex);

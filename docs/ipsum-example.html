@@ -325,7 +325,7 @@
 		["7", ["Socratica"]],
 		["8", ["Platonis"]],
 	]);
-	const opts = { tag: "x-annotate", getAttrs: id => `data-match-id="${id}"` };
+	const opts = { tag: "x-annotate", getAttrs: id => [['data-match-id', id]] };
 	const match = new Match(ipsumCI, ipsumCS, opts);
 	const textNodesFromDOM = new TextNodesFromDOM(document.body, [
 		opts.tag.toUpperCase(),

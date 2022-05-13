@@ -27,7 +27,7 @@ describe('match should', () => {
 			const ipsumCaseSensitive = new Map([['cs', ['ZXY', 'VUT']]]);
 			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
 				tag: 'x-a',
-				getAttrs: (id: string) => `data-match-id="${id}"`
+				getAttrs: (id: string) => [['data-match-id', id]]
 			});
 			const { trieAsString } = match.getDetails();
 			expect(trieAsString).to.equal(
@@ -40,7 +40,7 @@ describe('match should', () => {
 			const iThrowError = () =>
 				new Match(ipsumCaseInsensitive, null, {
 					tag: 'x-a',
-					getAttrs: (id: string) => `data-match-id="${id}"`
+					getAttrs: (id: string) => [['data-match-id', id]]
 				});
 			expect(iThrowError).to.throw(Error, 'lower-cased case-insensitive map contains duplicates');
 		});
@@ -50,7 +50,7 @@ describe('match should', () => {
 			const iThrowError = () =>
 				new Match(null, ipsumCaseSensitive, {
 					tag: 'x-a',
-					getAttrs: (id: string) => `data-match-id="${id}"`
+					getAttrs: (id: string) => [['data-match-id', id]]
 				});
 			expect(iThrowError).to.throw(Error, 'case-sensitive map contains duplicates');
 		});
@@ -60,7 +60,7 @@ describe('match should', () => {
 			const iThrowError = () =>
 				new Match(null, ipsumCaseSensitive, {
 					tag: 'x-a',
-					getAttrs: (id: string) => `data-match-id="${id}"`
+					getAttrs: (id: string) => [['data-match-id', id]]
 				});
 			expect(iThrowError).not.to.throw(Error);
 		});
@@ -71,7 +71,7 @@ describe('match should', () => {
 			const iThrowError = () =>
 				new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
 					tag: 'x-a',
-					getAttrs: (id: string) => `data-match-id="${id}"`
+					getAttrs: (id: string) => [['data-match-id', id]]
 				});
 			expect(iThrowError).to.throw(
 				Error,
@@ -90,7 +90,7 @@ describe('match should', () => {
 			const ipsumCaseSensitive = new Map([['cs', ['ZXY', 'VUT']]]);
 			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
 				tag: 'x-a',
-				getAttrs: (id: string) => `data-match-id="${id}"`
+				getAttrs: (id: string) => [['data-match-id', id]]
 			});
 
 			const res = match.getMatchIndexes(text);
@@ -115,7 +115,7 @@ describe('match should', () => {
 			const ipsumCaseSensitive = new Map([['cs', ['ZXY', 'VUT']]]);
 			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
 				tag: 'x-a',
-				getAttrs: (id: string) => `data-match-id="${id}"`
+				getAttrs: (id: string) => [['data-match-id', id]]
 			});
 
 			const res = match.getMatchIndexes(text);
@@ -137,7 +137,7 @@ describe('match should', () => {
 			const ipsumCaseSensitive = null;
 			const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
 				tag: 'x-a',
-				getAttrs: (id: string) => `data-match-id="${id}"`
+				getAttrs: (id: string) => [['data-match-id', id]]
 			});
 
 			const res = match.getMatchIndexes(text);
@@ -157,7 +157,7 @@ describe('match should', () => {
 			]);
 			const match = new Match(ipsumCaseInsensitive, null, {
 				tag: 'x-a',
-				getAttrs: (id: string) => `data-match-id="${id}"`
+				getAttrs: (id: string) => [['data-match-id', id]]
 			});
 
 			const res = match.getMatchIndexes(text);
@@ -177,7 +177,7 @@ describe('match should', () => {
 			]);
 			const match = new Match(ipsumCaseInsensitive, null, {
 				tag: 'a',
-				getAttrs: (id: string) => id
+				getAttrs: (id: string) => [['data-match-id', id]]
 			});
 
 			const res = match.getMatchIndexes(text);
@@ -188,7 +188,7 @@ describe('match should', () => {
 			const ipsumCaseInsensitive = new Map([['ci', ['abc', 'abc abc']]]);
 			const match = new Match(ipsumCaseInsensitive, null, {
 				tag: 'a',
-				getAttrs: (id: string) => id
+				getAttrs: (id: string) => [['data-match-id', id]]
 			});
 			const res = match.getMatchIndexes(text);
 			expect(JSON.stringify(res)).to.equal(JSON.stringify([['ci', 0, 7]]));
@@ -207,7 +207,7 @@ describe('match should', () => {
 			];
 			const match = new Match(new Map(ci), new Map(cs), {
 				tag: 'x-a',
-				getAttrs: (id: string) => `data-match-id="${id}"`
+				getAttrs: (id: string) => [['data-match-id', id]]
 			});
 			const strOfRnd =
 				'QPT13rJz Auyo RIoVPLq9eSVO xMwad 3-qoli YJrJVuyDR 0tsNyfd2 xmwad JsFcwSeS8DZ pklv PckJ vakgub  qAuyo';
@@ -223,7 +223,7 @@ describe('match should', () => {
 			const ci = null;
 			const match = new Match(new Map(ci), new Map(cs), {
 				tag: 'x-a',
-				getAttrs: (id: string) => `data-match-id="${id}"`
+				getAttrs: (id: string) => [['data-match-id', id]]
 			});
 			const strOfRnd =
 				'QPT13rJz Auyo RIoVPLq9eSVO xMwad 3-qoli YJrJVuyDR 0tsNyfd2 xmwad JsFcwSeS8DZ pklv PckJ vakgub Auyoq';
@@ -262,7 +262,7 @@ describe('match should', () => {
 		];
 		const match = new Match(new Map(ci), new Map(cs), {
 			tag: 'x-a',
-			getAttrs: (id: string) => `data-match-id="${id}"`
+			getAttrs: (id: string) => [['data-match-id', id]]
 		});
 		const matches = [
 			['ci-0', 67, 73],

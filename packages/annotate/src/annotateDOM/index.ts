@@ -9,8 +9,10 @@ const rangeWrap = (textNodes: Array<Node | HTMLElement>, match: Match) => {
 
 		matches.reverse().forEach((m) => {
 			const newParent = document.createElement('annotation-anchor');
-			newParent.setAttribute('data-content-id', m[0]);
-			newParent.setAttribute('data-annotation-variant', 'underline');
+			match.opts
+				.getAttrs(m[0])
+				.forEach(([prop, value]: [string, string]) => newParent.setAttribute(prop, value));
+
 			range.setStart(n, m[1]);
 			range.setEnd(n, m[2] + 1);
 			range.surroundContents(newParent);
