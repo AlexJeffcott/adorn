@@ -7,7 +7,7 @@ describe('match should', () => {
 
 	const match = new Match(new Map(ci), new Map(cs), {
 		tag: 'x-a',
-		getAttrs: (id: string) => `data-match-id="${id}"`
+		getAttrs: (id: string) => [['data-match-id', id]]
 	});
 	const matches = [['5', 0, 8]];
 

@@ -67,7 +67,7 @@ While the below examples showcase htmlWrapping via annotateDOM with a [custom el
 				['789', ['Ut']]
 			]);
 			const sensitive = new Map([['321', ['Nullam']]]);
-			const opts = { tag: 'x-annotate', getAttrs: (id: string) => `data-match-id="${id}"` };
+			const opts = { tag: 'x-annotate', getAttrs: (id: string) => [['data-match-id', id]] };
 
 			const match = new Match(insensitive, sensitive, opts);
 			const textNodesFromDOM = new TextNodesFromDOM(document.body, [opts.tag.toUpperCase()]);
@@ -92,7 +92,7 @@ const insensitive = new Map([
 	['789', ['Ut']]
 ]);
 const sensitive = new Map([['321', ['Nullam']]]);
-const opts = { tag: 'x-annotate', getAttrs: (id: string) => `data-match-id="${id}"` };
+const opts = { tag: 'x-annotate', getAttrs: (id: string) => [['data-match-id', id]] };
 const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, opts);
 const textNodesFromDOM = new TextNodesFromDOM(document.body, [opts.tag.toUpperCase()]);
 

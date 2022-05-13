@@ -5,7 +5,7 @@ import { ipsumCaseSensitive, ipsumCaseInsensitive, ipsumText } from '@fairfox/te
 
 const match = new Match(ipsumCaseInsensitive, ipsumCaseSensitive, {
 	tag: 'x-a',
-	getAttrs: (id: string) => `data-match-id="${id}"`
+	getAttrs: (id: string) => [['data-match-id', id]]
 });
 
 describe('annotate with', () => {
