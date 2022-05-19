@@ -16,7 +16,8 @@
 		"test-workaround": "wtr **/smoke.tsx --node-resolve --playwright --browsers firefox 2>/dev/null 1>/dev/null || true",
 		"//command_scripts": "the compositions of base_scripts go here",
 		"lint": "npm run types && npm run prettier && npm run eslint && npm run jscpd",
-		"test": "npm run test-workaround && wtr **/*.test.tsx --node-resolve --playwright --browsers firefox chromium"
+		"_test": "npm run test-workaround && wtr **/*.test.tsx --node-resolve --playwright --browsers firefox chromium",
+		"test": "npm run test-workaround && wtr **/*.test.tsx --node-resolve --playwright --browsers chromium"
 	},
 	"dependencies": {
 		"@fairfox/adorn": "file:../annotate",
