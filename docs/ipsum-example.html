@@ -2,13 +2,6 @@
 <meta charset="UTF-8" />
 <title>Lorum ipsum adorned</title>
 <head>
-	<style>
-		x-annotate {
-			border-bottom-color: cadetblue;
-			border-bottom-style: solid;
-			border-bottom-width: 2px;
-		}
-	</style>
 	<title>Lorem Ipsum</title>
 </head>
 <body>
@@ -325,7 +318,7 @@
 		["7", ["Socratica"]],
 		["8", ["Platonis"]],
 	]);
-	const opts = { tag: "x-annotate", getAttrs: id => [['data-match-id', id]] };
+	const opts = { tag: "a", getAttrs: id => [['href', id], ['data-match-id', id], ['data-annotation-variant', 'underline']], elementMethods: [['track', (args) => console.log('hello', args)]] };
 	const match = new Match(ipsumCI, ipsumCS, opts);
 	const textNodesFromDOM = new TextNodesFromDOM(document.body, [
 		opts.tag.toUpperCase(),
