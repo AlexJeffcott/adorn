@@ -4,7 +4,9 @@ type Trie = Map<string | '_kw_', Trie | string>;
 type KwListMap = Map<string, string[]>;
 type Opts = {
 	tag: string;
-	getAttrs: (id: string) => Array<[string, string]>;
+	element?: CustomElementConstructor;
+	elementMethods?: Array<[string, (args: any) => void]>;
+	getAttrs?: (id: string) => Array<[string, string]>;
 	shouldSkipChars?: boolean;
 };
 
@@ -33,6 +35,20 @@ export class Match {
 			shouldSkipChars: true,
 			...opts
 		};
+
+		if (
+			typeof window !== 'undefined' &&
+			window.customElements &&
+			opts.element !== undefined &&
+			!window.customElements.get(opts.tag)
+		) {
+			if (Array.isArray(opts.elementMethods) && opts.elementMethods.length) {
+				const { element } = opts;
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/restrict-template-expressions
+				opts.elementMethods.forEach(([methodName, fn]) => (element.prototype[methodName] = fn));
+			}
+			window.customElements.define(opts.tag, opts.element);
+		}
 	}
 
 	getDetails() {
@@ -196,9 +212,10 @@ export class Match {
 		let newSentence = '';
 
 		matches.forEach((match) => {
-			const attrStr = this.opts
-				.getAttrs(match[0])
-				.reduce((acc, cur, i) => `${acc}${i > 0 ? ' ' : ''}${cur[0]}="${cur[1]}"`, '');
+			const attrStr: string =
+				this.opts
+					.getAttrs?.(match[0])
+					.reduce((acc, cur, i) => `${acc}${i > 0 ? ' ' : ''}${cur[0]}="${cur[1]}"`, '') || '';
 
 			newSentence = `${newSentence}${sentence.slice(lastMatchEndIndex, match[1])}<${
 				this.opts.tag

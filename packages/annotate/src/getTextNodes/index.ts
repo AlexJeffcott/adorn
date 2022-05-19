@@ -74,7 +74,7 @@ export class TextNodesFromDOM {
 	watchDOM = (watchDOMCB: (nodes: Node[]) => void): MutationObserver => {
 		const mutationFilter = (mutations: MutationRecord[], observer: MutationObserver): void => {
 			for (const mutation of mutations) {
-				if (mutation.type === 'childList') {
+				if (mutation.type === 'childList' && mutation.addedNodes[0]) {
 					const n = mutation.addedNodes[0];
 					if (n.parentElement === null) return;
 					if (this.nodeReg.test(n.parentElement?.tagName || '')) return;
