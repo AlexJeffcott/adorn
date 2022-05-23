@@ -1,0 +1,18 @@
+name: Clean Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      min-version-to-keep:
+        description: "Keep minimum x versions"
+        default: "3"
+        required: false
+
+jobs:
+  clean-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/delete-package-versions@v3
+        with:
+          package-name: 'amboss-phrasio'
+          min-versions-to-keep: ${{ github.event.inputs.min-version-to-keep }}

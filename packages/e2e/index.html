@@ -20,7 +20,7 @@
 <aside>
 	<dl>
 		<dt>These terms should all be underlined, no matter the case.</dt>
-		<dd>Quamquam and also quamquam</dd>
+		<dd>Quamquam and also quamquam but not Quamquambambam</dd>
 		<dd>Quonam, inquit, modo and also quonam, inquit, modo</dd>
 		<dd>Moriatur and also moriatur</dd>
 		<dd>Arbitrantur and also arbitrantur</dd>
@@ -286,7 +286,7 @@
 			['4', ['pain', 'dolori']]
 		]);
 		const ipsumCS = new Map([['5', ['Aristonem']], ['6', ['Chryippo']], ['7', ['Socratica']], ['8', ['Platonis']]]);
-		const opts = { tag: 'x-annotate', getAttrs: (id: string) => [['data-match-id', id]] };
+		const opts = { tag: 'x-annotate', getAttrs: (id) => [['data-match-id', id]] };
 		const match = new Match(ipsumCI, ipsumCS, opts);
 		const textNodesFromDOM = new TextNodesFromDOM(document.body, [opts.tag.toUpperCase()]);
 
