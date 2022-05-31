@@ -145,8 +145,10 @@ export class Match {
 			for (let i = 0; i <= len; i++) {
 				const char = sentence[i];
 				const prevChar = sentence[i - 1];
+				const nextChar = sentence[i + 1];
 				const charIsNotAWordChar = !this.wordChars.has(char);
 				const prevCharIsNotAWordChar = !this.wordChars.has(prevChar);
+				const nextCharIsNotAWordChar = !this.wordChars.has(nextChar);
 
 				hasChar = currentTrie.has(char);
 
@@ -167,7 +169,7 @@ export class Match {
 				if (found[1] < 0 && prevCharIsNotAWordChar) found[1] = i;
 
 				currentTrie = currentTrie.get(char) as Trie;
-				if (currentTrie.has(this._kw)) {
+				if (currentTrie.has(this._kw) && nextCharIsNotAWordChar) {
 					found = [currentTrie.get(this._kw) as string, found[1], i];
 				}
 			}

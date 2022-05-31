@@ -2,22 +2,24 @@ import { expect } from 'chai';
 import { Match } from '../../';
 
 describe('match should', () => {
-	const ci = new Map([['2', ['a']]]);
-	const cs = new Map([['5', ['Aristonem']]]);
+	const cs = new Map([
+		['1', ['ab']],
+		['2', ['abc def']]
+	]);
 
-	const match = new Match(new Map(ci), new Map(cs), {
+	const match = new Match(null, new Map(cs), {
 		tag: 'x-a',
 		getAttrs: (id: string) => [['data-match-id', id]]
 	});
-	const matches = [['5', 0, 8]];
+	const matches = [['1', 0, 1]];
 
-	const str = 'Aristonem but not aristonem';
-	const replacedHtml = '<x-a data-match-id="5">Aristonem</x-a> but not aristonem';
+	const str = 'ab but not abc';
+	const replacedHtml = '<x-a data-match-id="1">ab</x-a> but not abc';
 
 	it('makes trie correctly', () => {
 		const { trieAsString } = match.getDetails();
 		expect(trieAsString).to.equal(
-			'CI ===> [["a",[["_kw_","2"]]],["A",[["_kw_","2"]]]] || CS ===> [["A",[["r",[["i",[["s",[["t",[["o",[["n",[["e",[["m",[["_kw_","5"]]]]]]]]]]]]]]]]]]]]'
+			'CI ===> [] || CS ===> [["a",[["b",[["_kw_","1"],["c",[[" ",[["d",[["e",[["f",[["_kw_","2"]]]]]]]]]]]]]]]]'
 		);
 	});
 

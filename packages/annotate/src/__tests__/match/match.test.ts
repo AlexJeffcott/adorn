@@ -169,6 +169,20 @@ describe('match should', () => {
 				])
 			);
 		});
+		it('with a shorter match before a longer semi-match', () => {
+			const cs = new Map([
+				['1', ['ab']],
+				['2', ['abc def']]
+			]);
+
+			const match = new Match(null, new Map(cs), {
+				tag: 'x-a',
+				getAttrs: (id: string) => [['data-match-id', id]]
+			});
+
+			const res = match.getMatchIndexes('ab but not abc');
+			expect(JSON.stringify(res)).to.equal(JSON.stringify([['1', 0, 1]]));
+		});
 		it('with a space in a semi-match before a real match', () => {
 			const text = 'a def';
 			const ipsumCaseInsensitive = new Map([
